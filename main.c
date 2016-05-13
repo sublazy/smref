@@ -25,35 +25,65 @@ typedef enum {
     TLC_STATE_YELLOW,
     TLC_STATE_GREEN,
     TLC_NUMOF_STATES
-} states_tlc;
+} state_tlc_t;
 
 typedef enum {
     TLC_EVENT_NULL,
     TLC_EVENT_NEXT,
     TLC_EVENT_RESET,
     TLC_NUMOF_EVENTS
-} events_tlc;
+} event_tlc_t;
 
-int transitions_tlc [TLC_NUMOF_STATES] [TLC_NUMOF_EVENTS] = {
+void tlc_red_on_entry(void)
+{
+    puts("Red light says hello!");
+}
+
+void tlc_red_run(void)
+{
+    puts("Red light is on.");
+}
+
+void tlc_red_on_exit(void)
+{
+    puts("Red light says bye!");
+}
+
+sm_state_t states_tlc [TLC_NUMOF_STATES] = {
     [TLC_STATE_RED] = {
-        [TLC_EVENT_NEXT] = TLC_STATE_YELLOW,
-        [TLC_EVENT_RESET] = TLC_STATE_OFF,
+        .id = TLC_STATE_RED,
+        .transitions = {
+            [TLC_EVENT_NEXT] = TLC_STATE_YELLOW,
+            [TLC_EVENT_RESET] = TLC_STATE_OFF,
+        },
+        .on_entry = tlc_red_on_entry,
+        .on_exit = tlc_red_on_exit,
+        .run = tlc_red_run,
     },
     [TLC_STATE_YELLOW] = {
-        [TLC_EVENT_NEXT] = TLC_STATE_GREEN,
-        [TLC_EVENT_RESET] = TLC_STATE_OFF,
+        .id = TLC_STATE_YELLOW,
+        .transitions = {
+            [TLC_EVENT_NEXT] = TLC_STATE_GREEN,
+            [TLC_EVENT_RESET] = TLC_STATE_OFF,
+        },
+        .on_entry = NULL,
+        .on_exit = NULL,
+        .run = NULL,
     },
-    [TLC_STATE_GREEN]= {
-        [TLC_EVENT_NEXT] = TLC_STATE_RED,
-        [TLC_EVENT_RESET] = TLC_STATE_OFF,
+    [TLC_STATE_GREEN] = {
+        .id = TLC_STATE_GREEN,
+        .transitions = {
+            [TLC_EVENT_NEXT] = TLC_STATE_RED,
+            [TLC_EVENT_RESET] = TLC_STATE_OFF,
+        },
     },
 };
 
 sm_t tlc = {
     .id = 0,
     .name = "traffic lights controller",
-    .transition_table = transitions_tlc[0],
-    .state = TLC_STATE_RED,
+    .all_states = states_tlc,
+    .current_state = &states_tlc[TLC_STATE_RED],
     .pending_event = TLC_EVENT_NULL,
     .numof_states = TLC_NUMOF_STATES,
     .numof_events = TLC_NUMOF_EVENTS,
