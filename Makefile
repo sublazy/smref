@@ -1,4 +1,4 @@
-sources = main.c sm.c
+sources = main.c sm.c sm_tlc.c
 
 all: $(sources) Makefile
 	gcc --std=c99 -Wall $(sources) -o main
