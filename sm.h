@@ -15,13 +15,4 @@ void sm_run(sm_t *sm);
 void sm_send_event(sm_t *sm, int event);
 void sm_print_tx_table(sm_t *sm);
 
-#define DBG_VAL_INT(identifier) \
-    printf("value of %s: %d\n", #identifier, (int)identifier)
-
-#define DBG_PRINT_ADDR(identifier) \
-    printf("address of %s: %p\n", #identifier, (void*)&identifier)
-
-#define DBG_VAL_PTR(identifier) \
-    printf("value of %s: %p\n", #identifier, (void*)identifier)
-
 #endif // SM_H
