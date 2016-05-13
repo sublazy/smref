@@ -15,7 +15,9 @@ sm_do_transitions(sm_t *sm)
         printf("received event #%d\n", sm->pending_event);
 
         int state_next =
-                sm->transition_table[sm->state * 3 + sm->pending_event];
+            sm->transition_table[
+                sm->state * sm->numof_events + sm->pending_event
+            ];
 
         sm->pending_event = 0;
 

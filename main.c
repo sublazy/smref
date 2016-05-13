@@ -55,6 +55,8 @@ sm_t tlc = {
     .transition_table = transitions_tlc[0],
     .state = TLC_STATE_RED,
     .pending_event = TLC_EVENT_NULL,
+    .numof_states = TLC_NUMOF_STATES,
+    .numof_events = TLC_NUMOF_EVENTS,
 };
 
 /* Main application

@@ -9,6 +9,8 @@ typedef struct {
     int state;
     int *transition_table;
     int pending_event;
+    int numof_states;
+    int numof_events;
 } sm_t;
 
 void sm_run(sm_t *sm);
