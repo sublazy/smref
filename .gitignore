@@ -1,0 +1,5 @@
+*.bkp
+*.bak
+*.a
+*.o
+*.local
