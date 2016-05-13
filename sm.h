@@ -1,8 +1,14 @@
 #ifndef SM_H
 #define SM_H
 
-void sm_check_events(void);
-void sm_do_transitions(void);
-void sm_run_state(void);
+#include <stdint.h>
+
+typedef struct {
+    uint32_t id;
+    char * name;
+    uint32_t state;
+} sm_t;
+
+void sm_run(sm_t *sm);
 
 #endif // SM_H
