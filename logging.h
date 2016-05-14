@@ -7,7 +7,6 @@
 #define LOG_INFO     (4)
 #define LOG_DBG      (5)
 
-extern int debug_level;
 
 #define LOG(level, str, args...) \
     do {  \

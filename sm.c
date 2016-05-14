@@ -1,6 +1,9 @@
 #include "sm.h"
+#include "logging.h"
 #include <stdio.h>
 #include <assert.h>
+
+static int debug_level = LOG_NONE;
 
 /* Private functions
  * ========================================================================== */

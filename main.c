@@ -5,7 +5,7 @@
 #include "sm_tlc2.h"
 #include "logging.h"
 
-int debug_level = LOG_INFO;
+static int debug_level = LOG_NONE;
 
 int main(void)
 {
