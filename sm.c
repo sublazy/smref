@@ -18,7 +18,7 @@ sm_do_transitions(sm_t *sm)
         sm->pending_event = 0;
 
         if (next_state_id != 0) {
-            printf("SM #%d: transition %d -> %d\n",
+            LOG(LOG_INFO, "SM #%d: transition %d -> %d",
                    sm->id, sm->current_state->id, next_state_id);
 
             if (sm->current_state->on_exit != NULL) {
@@ -50,8 +50,8 @@ void sm_run(sm_t *sm)
 {
     assert(sm);
 
-    printf("SM:\tid\tstate\tevent\tname\n");
-    printf("\t%d\t%d\t%d\t%s\n",
+    LOG(LOG_DBG, "SM:\tid\tstate\tevent\tname\n"
+           "\t\t%d\t%d\t%d\t%s",
            sm->id, sm->current_state->id, sm->pending_event, sm->name);
     sm_run_state(sm);
     sm_do_transitions(sm);
