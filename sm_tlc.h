@@ -14,14 +14,14 @@ typedef enum {
     TLC_STATE_YELLOW,
     TLC_STATE_GREEN,
     TLC_NUMOF_STATES
-} state_tlc_t;
+} sm_tlc_state_t;
 
 typedef enum {
     TLC_EVENT_NULL,
     TLC_EVENT_NEXT,
     TLC_EVENT_RESET,
     TLC_NUMOF_EVENTS
-} event_tlc_t;
+} sm_tlc_event_t;
 
 // Get the pointer to the state machine object.
 // Use it to send events to the SM.
