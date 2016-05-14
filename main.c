@@ -8,9 +8,7 @@ static int debug_level = LOG_NONE;
 
 int main(void)
 {
-    LOG(LOG_INFO, "Entering main");
     sm_t *sm_tlc = sm_tlc_get_obj();
-    sm_print_tx_table(sm_tlc);
     int cnt = 0;
 
     while(1) {
