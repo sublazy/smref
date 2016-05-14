@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 // Max number of transitions out of a single state.
-#define NOF_TRANSITIONS_MAX     3
+#define NOF_TRANSITIONS_MAX     6
 
 typedef struct {
     int id;
