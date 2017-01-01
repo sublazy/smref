@@ -1,0 +1,19 @@
+<?xml version = "1.0" ?>
+<sm
+    name = "Traffic Light Controller"
+    abbr = "tlc"
+    script = "smgen.gsl"
+    >
+
+<states>
+    <state name = "off" />
+    <state name = "red" />
+    <state name = "yellow" />
+    <state name = "green" />
+</states>
+
+<events>
+    <event name = "reset" />
+    <event name = "next" />
+</events>
+</sm>

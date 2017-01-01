@@ -1,0 +1,33 @@
+.output "sm_$(abbr).h"
+/* $(sm.name:) ($(ABBR)) State Machine. */
+
+#ifndef SM_$(ABBR)_H
+#define SM_$(ABBR)_H
+
+#include "sm.h"
+
+typedef enum {
+    $(ABBR)_STATE_NULL,
+.for states
+.    for state
+    $(ABBR)_STATE_$(NAME),
+.    endfor
+.endfor
+    $(ABBR)_NUMOF_STATES
+} sm_$(abbr)_state_t;
+
+typedef enum {
+    $(ABBR)_EVENT_NULL,
+.for events
+.    for event
+    $(ABBR)_EVENT_$(NAME),
+.    endfor
+.endfor
+    $(ABBR)_NUMOF_EVENTS
+} sm_$(abbr)_event_t;
+
+// Get the pointer to the state machine object.
+// Use it to send events to the SM.
+sm_t* sm_$(abbr)_get_obj(void);
+
+#endif // SM_$(ABBR)_H
