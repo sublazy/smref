@@ -1,19 +1,34 @@
 <?xml version = "1.0" ?>
 <sm
-    name = "Traffic Light Controller"
+    name = "Traffic Lights Controller"
     abbr = "tlc"
     script = "smgen.gsl"
     >
 
 <states>
-    <state name = "off" />
-    <state name = "red" />
-    <state name = "yellow" />
-    <state name = "green" />
+    <state name = "off">
+        <transition event = "next"  new_state = "red" />
+    </state>
+
+    <state name = "red">
+        <transition event = "next"  new_state = "yellow" />
+        <transition event = "reset" new_state = "off" />
+    </state>
+
+    <state name = "yellow">
+        <transition event = "next"  new_state = "green" />
+        <transition event = "reset" new_state = "off" />
+    </state>
+
+    <state name = "green">
+        <transition event = "next"  new_state = "red" />
+        <transition event = "reset" new_state = "off" />
+    </state>
 </states>
 
 <events>
     <event name = "reset" />
     <event name = "next" />
 </events>
+
 </sm>

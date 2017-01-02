@@ -22,8 +22,90 @@ typedef enum {
     $(ABBR)_NUMOF_EVENTS
 } sm_$(abbr)_event_t;
 
-// Get the pointer to the state machine object.
+// Get a pointer to the state machine object.
 // Use it to send events to the SM.
 sm_t* sm_$(abbr)_get_obj(void);
 
 #endif // SM_$(ABBR)_H
+.close
+
+.output "sm_$(abbr).c"
+/* $(sm.name:) ($(ABBR)) State Machine. */
+
+#include "sm_$(abbr).h"
+#include "sm_$(abbr)_actions.h"
+
+/* Transitions
+ * -------------------------------------------------------------------------- */
+static sm_state_t
+$(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
+.for states
+.    for state
+    [$(ABBR)_STATE_$(NAME)] = {
+        .id = $(ABBR)_STATE_$(NAME),
+        .transitions = {
+.       for transition
+            [$(ABBR)_EVENT_$(EVENT)] = $(ABBR)_STATE_$(NEW_STATE),
+.       endfor
+        },
+        .on_entry = $(abbr)_$(name)_on_entry,
+        .on_exit  = $(abbr)_$(name)_on_exit,
+        .run      = $(abbr)_$(name)_run,
+    },
+.    endfor
+.endfor
+};
+
+/* SM object
+ * -------------------------------------------------------------------------- */
+static sm_t
+$(abbr) = {
+    .id = 0,
+    .name = "$(sm.name)",
+    .all_states = $(abbr)_tx_table,
+    .current_state = &$(abbr)_tx_table[1],
+    .pending_event = 0,
+    .numof_states = $(ABBR)_NUMOF_STATES,
+    .numof_events = $(ABBR)_NUMOF_EVENTS,
+};
+
+sm_t*
+sm_$(abbr)_get_obj(void)
+{
+    return &$(abbr);
+}
+
+.close
+
+.output "sm_$(abbr)_actions.h"
+#ifndef SM_$(ABBR)_ACTIONS_H
+#define SM_$(ABBR)_ACTIONS_H
+
+.for sm->states
+void $(abbr)_$(name)_on_entry(void);
+void $(abbr)_$(name)_on_exit(void);
+void $(abbr)_$(name)_run(void);
+.endfor
+
+#endif // SM_$(ABBR)_ACTIONS_H
+.close
+
+.output "sm_$(abbr)_actions_skel.c"
+#include "sm_$(abbr)_actions.h"
+
+.for sm->states
+void $(abbr)_$(name)_on_entry(void)
+{
+}
+
+void $(abbr)_$(name)_on_exit(void)
+{
+}
+
+void $(abbr)_$(name)_run(void)
+{
+}
+
+.endfor
+
+.close
