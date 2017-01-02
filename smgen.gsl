@@ -8,20 +8,16 @@
 
 typedef enum {
     $(ABBR)_STATE_NULL,
-.for states
-.    for state
+.for sm->states
     $(ABBR)_STATE_$(NAME),
-.    endfor
 .endfor
     $(ABBR)_NUMOF_STATES
 } sm_$(abbr)_state_t;
 
 typedef enum {
     $(ABBR)_EVENT_NULL,
-.for events
-.    for event
+.for sm->events
     $(ABBR)_EVENT_$(NAME),
-.    endfor
 .endfor
     $(ABBR)_NUMOF_EVENTS
 } sm_$(abbr)_event_t;
