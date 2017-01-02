@@ -28,7 +28,6 @@ sm_t* sm_$(abbr)_get_obj(void);
 
 #endif // SM_$(ABBR)_H
 .close
-
 .output "sm_$(abbr).c"
 /* $(sm.name:) ($(ABBR)) State Machine. */
 
@@ -76,7 +75,6 @@ sm_$(abbr)_get_obj(void)
 }
 
 .close
-
 .output "sm_$(abbr)_actions.h"
 #ifndef SM_$(ABBR)_ACTIONS_H
 #define SM_$(ABBR)_ACTIONS_H
@@ -89,7 +87,6 @@ void $(abbr)_$(name)_run(void);
 
 #endif // SM_$(ABBR)_ACTIONS_H
 .close
-
 .output "sm_$(abbr)_actions_skel.c"
 #include "sm_$(abbr)_actions.h"
 
