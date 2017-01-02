@@ -1,6 +1,4 @@
-/*
- * Traffic Light Controller (TLC) State Machine.
- */
+/* Traffic Lights Controller (TLC) State Machine. */
 
 #ifndef SM_TLC_H
 #define SM_TLC_H
@@ -18,12 +16,12 @@ typedef enum {
 
 typedef enum {
     TLC_EVENT_NULL,
-    TLC_EVENT_NEXT,
     TLC_EVENT_RESET,
+    TLC_EVENT_NEXT,
     TLC_NUMOF_EVENTS
 } sm_tlc_event_t;
 
-// Get the pointer to the state machine object.
+// Get a pointer to the state machine object.
 // Use it to send events to the SM.
 sm_t* sm_tlc_get_obj(void);
 
