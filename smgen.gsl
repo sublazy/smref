@@ -22,9 +22,7 @@ typedef enum {
     $(ABBR)_NUMOF_EVENTS
 } sm_$(abbr)_event_t;
 
-// Get a pointer to the state machine object.
-// Use it to send events to the SM.
-sm_t* sm_$(abbr)_get_obj(void);
+sm_t sm_$(abbr)_new(void);
 
 #endif // SM_$(ABBR)_H
 .close
@@ -55,23 +53,11 @@ $(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
 .endfor
 };
 
-/* SM object
+/* Public functions
  * -------------------------------------------------------------------------- */
-static sm_t
-$(abbr) = {
-    .id = 0,
-    .name = "$(sm.name)",
-    .all_states = $(abbr)_tx_table,
-    .current_state = &$(abbr)_tx_table[1],
-    .pending_event = 0,
-    .numof_states = $(ABBR)_NUMOF_STATES,
-    .numof_events = $(ABBR)_NUMOF_EVENTS,
-};
-
-sm_t*
-sm_$(abbr)_get_obj(void)
+sm_t sm_$(abbr)_new(void)
 {
-    return &$(abbr);
+    return sm_new($(abbr)_tx_table, &$(abbr)_tx_table[1]);
 }
 
 .close
