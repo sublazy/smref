@@ -1,8 +1,9 @@
 <?xml version = "1.0" ?>
 <sm
-    name = "Traffic Lights Controller"
-    abbr = "tlc"
-    script = "smgen.gsl"
+    name        = "Traffic Lights Controller"
+    abbr        = "tlc"
+    script      = "smgen.gsl"
+    first_state = "off"
     >
 
 <states>

@@ -57,7 +57,8 @@ $(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
  * -------------------------------------------------------------------------- */
 sm_t sm_$(abbr)_new(void)
 {
-    return sm_new($(abbr)_tx_table, &$(abbr)_tx_table[1]);
+.   first_state_id = "$(abbr)_state_$(sm.first_state)"
+    return sm_new($(abbr)_tx_table, &$(abbr)_tx_table[$(FIRST_STATE_ID)]);
 }
 
 .close

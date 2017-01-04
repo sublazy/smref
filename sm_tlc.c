@@ -52,6 +52,6 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
  * -------------------------------------------------------------------------- */
 sm_t sm_tlc_new(void)
 {
-    return sm_new(tlc_tx_table, &tlc_tx_table[1]);
+    return sm_new(tlc_tx_table, &tlc_tx_table[TLC_STATE_OFF]);
 }
 
