@@ -9,7 +9,7 @@ static int debug_level = LOG_NONE;
 
 int main(void)
 {
-    sm_t *sm_tlc = sm_tlc_get_obj();
+    sm_t sm_tlc = sm_tlc_new();
     //sm_t *sm_car = sm_car_get_obj();
 
     int cnt = 0;

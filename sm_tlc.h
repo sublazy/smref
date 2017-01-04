@@ -21,8 +21,6 @@ typedef enum {
     TLC_NUMOF_EVENTS
 } sm_tlc_event_t;
 
-// Get a pointer to the state machine object.
-// Use it to send events to the SM.
-sm_t* sm_tlc_get_obj(void);
+sm_t sm_tlc_new(void);
 
 #endif // SM_TLC_H

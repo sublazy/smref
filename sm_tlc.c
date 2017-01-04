@@ -48,22 +48,9 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
     },
 };
 
-/* SM object
+/* Public functions
  * -------------------------------------------------------------------------- */
-static sm_t
-tlc = {
-    .id = 0,
-    .name = "traffic lights controller",
-    .all_states = tlc_tx_table,
-    .current_state = &tlc_tx_table[1],
-    .pending_event = 0,
-    .numof_states = TLC_NUMOF_STATES,
-    .numof_events = TLC_NUMOF_EVENTS,
-};
-
-sm_t*
-sm_tlc_get_obj(void)
+sm_t sm_tlc_new(void)
 {
-    return &tlc;
+    return sm_new(tlc_tx_table, &tlc_tx_table[TLC_STATE_OFF]);
 }
-

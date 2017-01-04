@@ -3,10 +3,13 @@
 
 #include <stdint.h>
 
+// Number of state machines in the system (size of the pool)
+#define NOF_STATEMACHINES 1
+
 // Max number of transitions out of a single state.
 #define NOF_TRANSITIONS_MAX     6
 
-typedef struct {
+typedef struct sm_state_s {
     int id;
     void (*on_entry)(void);
     void (*run)(void);
@@ -14,18 +17,10 @@ typedef struct {
     int transitions[NOF_TRANSITIONS_MAX];
 } sm_state_t;
 
-typedef struct {
-    uint32_t id;
-    char * name;
-    sm_state_t *all_states;
-    sm_state_t *current_state;
-    int pending_event;
-    int numof_states;
-    int numof_events;
-} sm_t;
+typedef struct sm_s *sm_t;
 
-void sm_run(sm_t *sm);
-void sm_send_event(sm_t *sm, int event);
-void sm_print_tx_table(sm_t *sm);
+sm_t sm_new(sm_state_t* state_tbl, sm_state_t* start_state);
+void sm_run(sm_t sm);
+void sm_send_event(sm_t sm, int event);
 
 #endif // SM_H
