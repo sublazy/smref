@@ -1,10 +1,10 @@
 <?xml version = "1.0" ?>
-<sm
+<fsm
     name        = "Traffic Lights Controller"
     abbr        = "tlc"
-    script      = "smgen.gsl"
+    script      = "fsm.gsl"
     first_state = "off"
-    >
+>
 
 <states>
     <state name = "off">
@@ -32,4 +32,4 @@
     <event name = "next" />
 </events>
 
-</sm>
+</fsm>

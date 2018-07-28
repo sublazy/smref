@@ -2,7 +2,7 @@
  * A State Machine modelling a car on the road crossing.
  */
 
-#include "sm_car.h"
+#include "fsm_car.h"
 #include <unistd.h> // for NULL
 #include <stdio.h> // for puts
 
@@ -16,7 +16,7 @@ static void
 
 /* Transitions
  * ========================================================================== */
-static sm_state_t
+static fsm_state_t
 states_car [CAR_NUMOF_STATES] = {
     [CAR_STATE_GONE] = {
         .id = CAR_STATE_GONE,
@@ -40,9 +40,9 @@ states_car [CAR_NUMOF_STATES] = {
     },
 };
 
-/* SM object
+/* FSM object
  * ========================================================================== */
-static sm_t
+static fsm_t
 car = {
     .id = 3,
     .name = "car on the crossing",
@@ -53,8 +53,8 @@ car = {
     .numof_events = CAR_NUMOF_EVENTS,
 };
 
-sm_t*
-sm_car_get_obj(void)
+fsm_t*
+fsm_car_get_obj(void)
 {
     return &car;
 }

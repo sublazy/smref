@@ -1,24 +1,24 @@
 #include <stdio.h>
 #include <unistd.h>
-#include "sm.h"
-#include "sm_tlc.h"
-#include "sm_car.h"
+#include "fsm.h"
+#include "fsm_tlc.h"
+#include "fsm_car.h"
 #include "logging.h"
 
 static int debug_level = LOG_NONE;
 
 int main(void)
 {
-    sm_t sm_tlc = sm_tlc_new();
-    //sm_t *sm_car = sm_car_get_obj();
+    fsm_t fsm_tlc = fsm_tlc_new();
+    //fsm_t *fsm_car = fsm_car_get_obj();
 
     int cnt = 0;
     while(1) {
         LOG(LOG_DBG, "--- Loop cycle %d", cnt);
-        sm_run(sm_tlc);
-        //sm_run(sm_car);
+        fsm_run(fsm_tlc);
+        //fsm_run(fsm_car);
         sleep(1);
-        sm_send_event(sm_tlc, TLC_EVENT_NEXT);
+        fsm_send_event(fsm_tlc, TLC_EVENT_NEXT);
         cnt++;
     }
 

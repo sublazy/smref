@@ -2,10 +2,10 @@
  * A State Machine modelling a car on the road crossing.
  */
 
-#ifndef SM_CAR
-#define SM_CAR
+#ifndef FSM_CAR
+#define FSM_CAR
 
-#include "sm.h"
+#include "fsm.h"
 
 typedef enum {
     CAR_STATE_NULL,
@@ -14,7 +14,7 @@ typedef enum {
     CAR_STATE_WAIT,
     CAR_STATE_GO,
     CAR_NUMOF_STATES
-} sm_car_state_t;
+} fsm_car_state_t;
 
 typedef enum {
     CAR_EVENT_NULL,
@@ -24,10 +24,10 @@ typedef enum {
     CAR_EVENT_LIGHT_GREEN,
     CAR_EVENT_CLEARED,
     CAR_NUMOF_EVENTS
-} sm_car_event_t;
+} fsm_car_event_t;
 
 // Get the pointer to the state machine object.
-// Use it to send events to the SM.
-sm_t* sm_car_get_obj(void);
+// Use it to send events to the FSM.
+fsm_t* fsm_car_get_obj(void);
 
-#endif // SM_CAR_H
+#endif // FSM_CAR_H

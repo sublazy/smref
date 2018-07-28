@@ -1,11 +1,11 @@
 /* Traffic Lights Controller (TLC) State Machine. */
 
-#include "sm_tlc.h"
-#include "sm_tlc_actions.h"
+#include "fsm_tlc.h"
+#include "fsm_tlc_actions.h"
 
 /* Transitions
  * -------------------------------------------------------------------------- */
-static sm_state_t
+static fsm_state_t
 tlc_tx_table [TLC_NUMOF_STATES] = {
     [TLC_STATE_OFF] = {
         .id = TLC_STATE_OFF,
@@ -50,8 +50,8 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
 
 /* Public functions
  * -------------------------------------------------------------------------- */
-sm_t sm_tlc_new(void)
+fsm_t fsm_tlc_new(void)
 {
-    return sm_new(tlc_tx_table, &tlc_tx_table[TLC_STATE_OFF]);
+    return fsm_new(tlc_tx_table, &tlc_tx_table[TLC_STATE_OFF]);
 }
 

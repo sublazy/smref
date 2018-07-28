@@ -1,4 +1,4 @@
-#include "sm.h"
+#include "fsm.h"
 #include "logging.h"
 #include <stdio.h>
 #include <assert.h>
@@ -7,55 +7,55 @@ static int debug_level = LOG_NONE;
 
 /* Private types
  * ========================================================================== */
-struct sm_s{
+struct fsm_s{
     uint32_t id;
     char * name;
-    sm_state_t *all_states;
-    sm_state_t *current_state;
+    fsm_state_t *all_states;
+    fsm_state_t *current_state;
     int pending_event;
 };
 
 /* Private data
  * ========================================================================== */
-static struct sm_s
-sm_pool[NOF_STATEMACHINES];
+static struct fsm_s
+fsm_pool[NOF_STATEMACHINES];
 
 static uint32_t
-nof_sms_in_use = 0;
+nof_fsms_in_use = 0;
 
 /* Private functions
  * ========================================================================== */
 static void
-sm_do_transitions(sm_t sm)
+fsm_do_transitions(fsm_t fsm)
 {
-    if (sm->pending_event != 0) {
+    if (fsm->pending_event != 0) {
 
-        int next_state_id = sm->current_state->transitions[sm->pending_event];
+        int next_state_id = fsm->current_state->transitions[fsm->pending_event];
 
-        sm->pending_event = 0;
+        fsm->pending_event = 0;
 
         if (next_state_id != 0) {
-            LOG(LOG_INFO, "SM #%d: transition %d -> %d",
-                   sm->id, sm->current_state->id, next_state_id);
+            LOG(LOG_INFO, "FSM #%d: transition %d -> %d",
+                   fsm->id, fsm->current_state->id, next_state_id);
 
-            if (sm->current_state->on_exit != NULL) {
-                sm->current_state->on_exit();
+            if (fsm->current_state->on_exit != NULL) {
+                fsm->current_state->on_exit();
             }
 
-            sm->current_state = &sm->all_states[next_state_id];
+            fsm->current_state = &fsm->all_states[next_state_id];
 
-            if (sm->current_state->on_entry != NULL) {
-                sm->current_state->on_entry();
+            if (fsm->current_state->on_entry != NULL) {
+                fsm->current_state->on_entry();
             }
         }
     }
 }
 
 static void
-sm_run_state(sm_t sm)
+fsm_run_state(fsm_t fsm)
 {
-    if (sm->current_state->run != NULL) {
-        sm->current_state->run();
+    if (fsm->current_state->run != NULL) {
+        fsm->current_state->run();
     }
 }
 
@@ -63,40 +63,40 @@ sm_run_state(sm_t sm)
 /* Public functions
  * ========================================================================== */
 // TODO start_state belongs in the xml model
-sm_t sm_new(sm_state_t* state_tbl, sm_state_t* start_state)
+fsm_t fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
 {
     assert (state_tbl != NULL);
     assert (start_state != NULL);
 
-    uint32_t new_sm_idx = nof_sms_in_use;
-    struct sm_s *new_sm = &sm_pool[new_sm_idx];
-    assert (new_sm != NULL);
-    nof_sms_in_use++;
-    assert (nof_sms_in_use <= NOF_STATEMACHINES);
+    uint32_t new_fsm_idx = nof_fsms_in_use;
+    struct fsm_s *new_fsm = &fsm_pool[new_fsm_idx];
+    assert (new_fsm != NULL);
+    nof_fsms_in_use++;
+    assert (nof_fsms_in_use <= NOF_STATEMACHINES);
 
-    new_sm->id = new_sm_idx;
-    new_sm->name = "N/A";
-    new_sm->all_states = state_tbl;
-    new_sm->current_state = start_state;
-    new_sm->pending_event = 0;
+    new_fsm->id = new_fsm_idx;
+    new_fsm->name = "N/A";
+    new_fsm->all_states = state_tbl;
+    new_fsm->current_state = start_state;
+    new_fsm->pending_event = 0;
 
-    LOG(LOG_INFO, "Created state machine #%d", new_sm_idx);
+    LOG(LOG_INFO, "Created state machine #%d", new_fsm_idx);
 
-    return new_sm;
+    return new_fsm;
 }
 
-void sm_run(sm_t sm)
+void fsm_run(fsm_t fsm)
 {
-    assert(sm);
+    assert(fsm);
 
-    LOG(LOG_DBG, "SM:\tid\tstate\tevent\tname\n"
+    LOG(LOG_DBG, "FSM:\tid\tstate\tevent\tname\n"
            "\t\t%d\t%d\t%d\t%s",
-           sm->id, sm->current_state->id, sm->pending_event, sm->name);
-    sm_run_state(sm);
-    sm_do_transitions(sm);
+           fsm->id, fsm->current_state->id, fsm->pending_event, fsm->name);
+    fsm_run_state(fsm);
+    fsm_do_transitions(fsm);
 }
 
-void sm_send_event(sm_t sm, int event)
+void fsm_send_event(fsm_t fsm, int event)
 {
-    sm->pending_event = event;
+    fsm->pending_event = event;
 }

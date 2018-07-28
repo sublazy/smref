@@ -1,10 +1,10 @@
-sources = main.c sm.c sm_tlc.c sm_tlc_actions.c
+sources = main.c fsm.c fsm_tlc.c fsm_tlc_actions.c
 
 all: $(sources) Makefile
 	gcc --std=c99 -Wall $(sources) -o main
 
 code:
-	gsl -q sm_tlc.xml
+	gsl -q fsm_tlc.xml
 
 clean:
 	@rm -rf main

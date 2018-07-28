@@ -1,5 +1,5 @@
-#ifndef SM_TLC_ACTIONS_H
-#define SM_TLC_ACTIONS_H
+#ifndef FSM_TLC_ACTIONS_H
+#define FSM_TLC_ACTIONS_H
 
 void tlc_off_on_entry(void);
 void tlc_off_on_exit(void);
@@ -14,4 +14,4 @@ void tlc_green_on_entry(void);
 void tlc_green_on_exit(void);
 void tlc_green_run(void);
 
-#endif // SM_TLC_ACTIONS_H
+#endif // FSM_TLC_ACTIONS_H

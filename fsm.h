@@ -1,5 +1,5 @@
-#ifndef SM_H
-#define SM_H
+#ifndef FSM_H
+#define FSM_H
 
 #include <stdint.h>
 
@@ -9,18 +9,18 @@
 // Max number of transitions out of a single state.
 #define NOF_TRANSITIONS_MAX     6
 
-typedef struct sm_state_s {
+typedef struct fsm_state_s {
     int id;
     void (*on_entry)(void);
     void (*run)(void);
     void (*on_exit)(void);
     int transitions[NOF_TRANSITIONS_MAX];
-} sm_state_t;
+} fsm_state_t;
 
-typedef struct sm_s *sm_t;
+typedef struct fsm_s *fsm_t;
 
-sm_t sm_new(sm_state_t* state_tbl, sm_state_t* start_state);
-void sm_run(sm_t sm);
-void sm_send_event(sm_t sm, int event);
+fsm_t fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state);
+void fsm_run(fsm_t fsm);
+void fsm_send_event(fsm_t fsm, int event);
 
-#endif // SM_H
+#endif // FSM_H

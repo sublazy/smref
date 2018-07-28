@@ -1,40 +1,40 @@
-.output "sm_$(abbr).h"
-/* $(sm.name:) ($(ABBR)) State Machine. */
+.output "fsm_$(abbr).h"
+/* $(fsm.name:) ($(ABBR)) State Machine. */
 
-#ifndef SM_$(ABBR)_H
-#define SM_$(ABBR)_H
+#ifndef FSM_$(ABBR)_H
+#define FSM_$(ABBR)_H
 
-#include "sm.h"
+#include "fsm.h"
 
 typedef enum {
     $(ABBR)_STATE_NULL,
-.for sm->states
+.for fsm->states
     $(ABBR)_STATE_$(NAME),
 .endfor
     $(ABBR)_NUMOF_STATES
-} sm_$(abbr)_state_t;
+} fsm_$(abbr)_state_t;
 
 typedef enum {
     $(ABBR)_EVENT_NULL,
-.for sm->events
+.for fsm->events
     $(ABBR)_EVENT_$(NAME),
 .endfor
     $(ABBR)_NUMOF_EVENTS
-} sm_$(abbr)_event_t;
+} fsm_$(abbr)_event_t;
 
-sm_t sm_$(abbr)_new(void);
+fsm_t fsm_$(abbr)_new(void);
 
-#endif // SM_$(ABBR)_H
+#endif // FSM_$(ABBR)_H
 .close
-.output "sm_$(abbr).c"
-/* $(sm.name:) ($(ABBR)) State Machine. */
+.output "fsm_$(abbr).c"
+/* $(fsm.name:) ($(ABBR)) State Machine. */
 
-#include "sm_$(abbr).h"
-#include "sm_$(abbr)_actions.h"
+#include "fsm_$(abbr).h"
+#include "fsm_$(abbr)_actions.h"
 
 /* Transitions
  * -------------------------------------------------------------------------- */
-static sm_state_t
+static fsm_state_t
 $(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
 .for states
 .    for state
@@ -55,29 +55,29 @@ $(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
 
 /* Public functions
  * -------------------------------------------------------------------------- */
-sm_t sm_$(abbr)_new(void)
+fsm_t fsm_$(abbr)_new(void)
 {
-.   first_state_id = "$(abbr)_state_$(sm.first_state)"
-    return sm_new($(abbr)_tx_table, &$(abbr)_tx_table[$(FIRST_STATE_ID)]);
+.   first_state_id = "$(abbr)_state_$(fsm.first_state)"
+    return fsm_new($(abbr)_tx_table, &$(abbr)_tx_table[$(FIRST_STATE_ID)]);
 }
 
 .close
-.output "sm_$(abbr)_actions.h"
-#ifndef SM_$(ABBR)_ACTIONS_H
-#define SM_$(ABBR)_ACTIONS_H
+.output "fsm_$(abbr)_actions.h"
+#ifndef FSM_$(ABBR)_ACTIONS_H
+#define FSM_$(ABBR)_ACTIONS_H
 
-.for sm->states
+.for fsm->states
 void $(abbr)_$(name)_on_entry(void);
 void $(abbr)_$(name)_on_exit(void);
 void $(abbr)_$(name)_run(void);
 .endfor
 
-#endif // SM_$(ABBR)_ACTIONS_H
+#endif // FSM_$(ABBR)_ACTIONS_H
 .close
-.output "sm_$(abbr)_actions_skel.c"
-#include "sm_$(abbr)_actions.h"
+.output "fsm_$(abbr)_actions_skel.c"
+#include "fsm_$(abbr)_actions.h"
 
-.for sm->states
+.for fsm->states
 void $(abbr)_$(name)_on_entry(void)
 {
 }
