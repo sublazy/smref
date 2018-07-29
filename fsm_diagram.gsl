@@ -1,0 +1,29 @@
+.template 0 # Set 'script mode'
+
+# Execution:
+# gsl -script:fsm_diagram.gsl <fsm_model>.xml
+
+.output "fsm_diagram.txt"
+
+>@startuml
+>
+>[*] --> $(fsm.first_state)
+
+scope fsm->states
+for state
+    >
+    >state $(name) {
+
+    for state.transition
+        >    $(state.name) --> $(transition.new_state) : $(transition.event)
+    endfor
+
+    >}
+
+endfor
+endscope
+
+>
+>@enduml
+.endtemplate
+
