@@ -47,7 +47,7 @@ $(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
         },
         .on_entry = $(abbr)_$(name)_on_entry,
         .on_exit  = $(abbr)_$(name)_on_exit,
-        .run      = $(abbr)_$(name)_run,
+        .on_tick  = $(abbr)_$(name)_on_tick,
     },
 .    endfor
 .endfor
@@ -69,7 +69,7 @@ fsm_t fsm_$(abbr)_new(void)
 .for fsm->states
 void $(abbr)_$(name)_on_entry(void);
 void $(abbr)_$(name)_on_exit(void);
-void $(abbr)_$(name)_run(void);
+void $(abbr)_$(name)_on_tick(void);
 .endfor
 
 #endif // FSM_$(ABBR)_ACTIONS_H
@@ -86,7 +86,7 @@ void $(abbr)_$(name)_on_exit(void)
 {
 }
 
-void $(abbr)_$(name)_run(void)
+void $(abbr)_$(name)_on_tick(void)
 {
 }
 

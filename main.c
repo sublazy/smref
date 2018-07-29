@@ -15,8 +15,8 @@ int main(void)
     int cnt = 0;
     while(1) {
         LOG(LOG_DBG, "--- Loop cycle %d", cnt);
-        fsm_run(fsm_tlc);
-        //fsm_run(fsm_car);
+        fsm_tick(fsm_tlc);
+        //fsm_tick(fsm_car);
         sleep(1);
         fsm_send_event(fsm_tlc, TLC_EVENT_NEXT);
         cnt++;

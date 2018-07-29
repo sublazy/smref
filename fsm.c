@@ -26,7 +26,31 @@ nof_fsms_in_use = 0;
 /* Private functions
  * ========================================================================== */
 static void
-fsm_do_transitions(fsm_t fsm)
+fsm_try_entry_action(fsm_t fsm)
+{
+    if (fsm->current_state->on_entry != NULL) {
+        fsm->current_state->on_entry();
+    }
+}
+
+static void
+fsm_try_exit_action(fsm_t fsm)
+{
+    if (fsm->current_state->on_exit != NULL) {
+        fsm->current_state->on_exit();
+    }
+}
+
+static void
+fsm_try_tick_action(fsm_t fsm)
+{
+    if (fsm->current_state->on_tick != NULL) {
+        fsm->current_state->on_tick();
+    }
+}
+
+static void
+fsm_try_transition(fsm_t fsm)
 {
     if (fsm->pending_event != 0) {
 
@@ -38,27 +62,12 @@ fsm_do_transitions(fsm_t fsm)
             LOG(LOG_INFO, "FSM #%d: transition %d -> %d",
                    fsm->id, fsm->current_state->id, next_state_id);
 
-            if (fsm->current_state->on_exit != NULL) {
-                fsm->current_state->on_exit();
-            }
-
+            fsm_try_exit_action(fsm);
             fsm->current_state = &fsm->all_states[next_state_id];
-
-            if (fsm->current_state->on_entry != NULL) {
-                fsm->current_state->on_entry();
-            }
+            fsm_try_entry_action(fsm);
         }
     }
 }
-
-static void
-fsm_run_state(fsm_t fsm)
-{
-    if (fsm->current_state->run != NULL) {
-        fsm->current_state->run();
-    }
-}
-
 
 /* Public functions
  * ========================================================================== */
@@ -85,15 +94,15 @@ fsm_t fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
     return new_fsm;
 }
 
-void fsm_run(fsm_t fsm)
+void fsm_tick(fsm_t fsm)
 {
     assert(fsm);
 
     LOG(LOG_DBG, "FSM:\tid\tstate\tevent\tname\n"
            "\t\t%d\t%d\t%d\t%s",
            fsm->id, fsm->current_state->id, fsm->pending_event, fsm->name);
-    fsm_run_state(fsm);
-    fsm_do_transitions(fsm);
+    fsm_try_tick_action(fsm);
+    fsm_try_transition(fsm);
 }
 
 void fsm_send_event(fsm_t fsm, int event)
