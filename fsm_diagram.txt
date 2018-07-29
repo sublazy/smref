@@ -1,0 +1,25 @@
+@startuml
+
+[*] --> off
+
+state off {
+    off --> red : next
+}
+
+state red {
+    red --> yellow : next
+    red --> off : reset
+}
+
+state yellow {
+    yellow --> green : next
+    yellow --> off : reset
+}
+
+state green {
+    green --> red : next
+    green --> off : reset
+}
+
+@enduml
+
