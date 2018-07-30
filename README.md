@@ -117,8 +117,9 @@ fsm_send_event(fsm_tlc, TLC_EVENT_NEXT);
 ## Automating FSM creation process
 
 After implementing a few state machines, it becomes tedious to manually write
-FSM files, always following the same pattern. So a generator is provided. It
-allows to specify states, events, and transitions in an xml file:
+FSM files, always following the same pattern. So a script for [GSL
+generator](https://github.com/zeromq/gsl) is provided. It allows to specify
+states, events, and transitions in an xml file:
 
 ```
 <?xml version = "1.0" ?>
