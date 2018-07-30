@@ -14,7 +14,7 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
         },
         .on_entry = tlc_off_on_entry,
         .on_exit  = tlc_off_on_exit,
-        .on_tick  = tlc_off_run,
+        .on_tick  = tlc_off_on_tick,
     },
     [TLC_STATE_RED] = {
         .id = TLC_STATE_RED,
@@ -24,7 +24,7 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
         },
         .on_entry = tlc_red_on_entry,
         .on_exit  = tlc_red_on_exit,
-        .on_tick  = tlc_red_run,
+        .on_tick  = tlc_red_on_tick,
     },
     [TLC_STATE_YELLOW] = {
         .id = TLC_STATE_YELLOW,
@@ -34,7 +34,7 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
         },
         .on_entry = tlc_yellow_on_entry,
         .on_exit  = tlc_yellow_on_exit,
-        .on_tick  = tlc_yellow_run,
+        .on_tick  = tlc_yellow_on_tick,
     },
     [TLC_STATE_GREEN] = {
         .id = TLC_STATE_GREEN,
@@ -44,7 +44,7 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
         },
         .on_entry = tlc_green_on_entry,
         .on_exit  = tlc_green_on_exit,
-        .on_tick  = tlc_green_run,
+        .on_tick  = tlc_green_on_tick,
     },
 };
 
