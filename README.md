@@ -163,13 +163,13 @@ Having the state machine specified as an GSL model, allows to automatically gene
 > gsl -script:fsmgen.gsl fsm_tlc.xml
 ```
 
-We can also generate a plantUML diagram:
+We can also generate a [plantUML](http://plantuml.com/state-diagram) diagram:
 ```
 > gsl -script:fsm_diagram.gsl fsm_tlc.xml
 ```
 
 ![TLC state transition diagram](fsm_diagram.png)
 
-_Note: Mention similarity of the XML model to SCXML._
+_Note: You may notice that the XML model describing the state machine for GSL generator resembles [SCXML](https://en.wikipedia.org/wiki/SCXML) specification very closely. This is pure coincidence; I made this implementation before I learned about SCXML._
 
 
