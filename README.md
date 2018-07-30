@@ -1,10 +1,10 @@
-# A reference implementation of a statemachine
+# A Reference Implementation of a State Machine
 
 This implementation has two main features: very low latencies, and no dynamic
 memory allocation. As such, it is targeted mainly at bare-metal software
 running on microcontrollers.
 
-## How it works [TODO]
+## Defining a State Machine
 
 For each state machine we need to specify:
 - a set of states and events
