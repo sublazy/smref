@@ -6,6 +6,11 @@
     first_state = "off"
 >
 
+<events>
+    <event name = "reset" />
+    <event name = "next" />
+</events>
+
 <states>
     <state name = "off">
         <transition event = "next"  new_state = "red" />
@@ -26,10 +31,5 @@
         <transition event = "reset" new_state = "off" />
     </state>
 </states>
-
-<events>
-    <event name = "reset" />
-    <event name = "next" />
-</events>
 
 </fsm>
