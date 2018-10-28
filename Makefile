@@ -1,7 +1,7 @@
 sources = main.c fsm.c fsm_tlc.c fsm_tlc_actions.c
 
-all: $(sources) Makefile
-	gcc --std=c99 -Wall $(sources) -o main
+main: $(sources)
+	gcc --std=c99 -Wall $(sources) -o $@
 
 code:
 	gsl -q -script:fsmgen.gsl fsm_tlc.xml
