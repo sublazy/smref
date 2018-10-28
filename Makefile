@@ -4,7 +4,7 @@ all: $(sources) Makefile
 	gcc --std=c99 -Wall $(sources) -o main
 
 code:
-	gsl -q fsm_tlc.xml
+	gsl -q -script:fsmgen.gsl fsm_tlc.xml
 
 clean:
 	@rm -rf main

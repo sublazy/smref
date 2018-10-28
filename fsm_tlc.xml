@@ -2,7 +2,6 @@
 <fsm
     name        = "Traffic Lights Controller"
     abbr        = "tlc"
-    script      = "fsm.gsl"
     first_state = "off"
 >
 
