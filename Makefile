@@ -15,7 +15,9 @@ fsm_%.png: fsm_%.txt
 
 # Phony targets
 # ------------------------------------------------------------------------------
-PHONY: clean code diagrams
+.PHONY: all clean code diagrams
+
+all: main diagrams
 
 code:
 	gsl -q -script:fsmgen.gsl fsm_tlc.xml
@@ -23,5 +25,5 @@ code:
 diagrams: $(diagram_files)
 
 clean:
-	@rm -rf main
+	@rm -rf main $(diagram_files)
 
