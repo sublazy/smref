@@ -3,8 +3,6 @@
 # Execution:
 # gsl -script:fsm_diagram.gsl <fsm_model>.xml
 
-.output "fsm_$(abbr).txt"
-
 >@startuml
 >
 >[*] --> $(fsm.first_state)

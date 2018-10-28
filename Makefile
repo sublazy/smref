@@ -10,7 +10,7 @@ code:
 	gsl -q -script:fsmgen.gsl fsm_tlc.xml
 
 fsm_%.txt: fsm_%.xml fsm_diagram.gsl
-	gsl -q -script:fsm_diagram.gsl $<
+	gsl -q -script:fsm_diagram.gsl $< > $@
 
 fsm_%.png: fsm_%.txt
 	plantuml $<
