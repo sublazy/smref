@@ -1,5 +1,5 @@
 
-DIRS=sh python dotnet cpp c javascript
+DIRS=c
 
 all: build
 	@echo
@@ -7,13 +7,11 @@ all: build
 
 build:
 	set -e; for d in $(DIRS); do \
-		if [ "$$d" = "dotnet" ] && ! runnable gmcs; then continue; fi; \
 		$(MAKE) -C $$d all; \
 	done
 
 runtests: build
 	set -e; for d in $(DIRS); do \
-		if [ "$$d" = "dotnet" ] && ! runnable gmcs; then continue; fi; \
 		$(MAKE) -C $$d runtests; \
 	done
 
