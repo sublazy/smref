@@ -23,10 +23,42 @@ static fsm_state_t dummy_processor_table [] = {
 
 WVTEST_MAIN("FSM-jinn engine tests")
 {
-    fsm_t dummy_processor = fsm_new(dummy_processor_table, &dummy_processor_table[STATE_WAITING]);
+    fsm_t dummy_processor = fsm_new(
+            dummy_processor_table, &dummy_processor_table[STATE_WAITING]);
+
 	WVFAIL(dummy_processor == NULL);
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_WAITING);
+
+	// Just ticking it shouldn't cause state change.
+	fsm_tick(dummy_processor);
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_WAITING);
+
+    // Make sure that we can also obtain the full state struct, not just the id.
+    WVPASS(fsm_get_state(dummy_processor) == &dummy_processor_table[STATE_WAITING]);
+
+	// Let's trigger a state transition.
+	fsm_send_event(dummy_processor, EVENT_DATA_AVAILABLE);
+	// It's not supposed to change state without a tick.
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_WAITING);
 
 	fsm_tick(dummy_processor);
-	fsm_send_event(dummy_processor, EVENT_DATA_AVAILABLE);
+	// After the tick we expect the new state.
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_PROCESSING);
+	fsm_tick(dummy_processor);
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_PROCESSING);
+	fsm_tick(dummy_processor);
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_PROCESSING);
+
+    WVPASS(fsm_get_state(dummy_processor) == &dummy_processor_table[STATE_PROCESSING]);
+
+	fsm_send_event(dummy_processor, EVENT_PROCESSING_DONE);
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_PROCESSING);
+
+	fsm_tick(dummy_processor);
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_WAITING);
+	fsm_tick(dummy_processor);
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_WAITING);
+	fsm_tick(dummy_processor);
+	WVPASS(fsm_get_state_id(dummy_processor) == STATE_WAITING);
 }
 
