@@ -39,18 +39,18 @@ static int fd_count(const char *when)
 {
     int count = 0;
     int fd;
-    printf("fds open at %s:", when);
+    // printf("fds open at %s:", when);
 
     for (fd = 0; fd < 1024; fd++)
     {
 	if (fd_is_valid(fd))
 	{
 	    count++;
-	    printf(" %d", fd);
+	    // printf(" %d", fd);
 	    fflush(stdout);
 	}
     }
-    printf("\n");
+    // printf("\n");
 
     return count;
 }
@@ -63,12 +63,14 @@ int main(int argc, char **argv)
     setup_console_crash();
 #endif
 
+#if 0
     // test wvtest itself.  Not very thorough, but you have to draw the
     // line somewhere :)
     WVPASS(true);
     WVPASS(1);
     WVFAIL(false);
     WVFAIL(0);
+#endif
     int startfd, endfd;
     char * const *prefixes = NULL;
 
