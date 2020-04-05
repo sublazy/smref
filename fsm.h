@@ -22,5 +22,7 @@ typedef struct fsm_s *fsm_t;
 fsm_t fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state);
 void fsm_tick(fsm_t fsm);
 void fsm_send_event(fsm_t fsm, int event);
+int fsm_get_state_id(fsm_t fsm);
+struct fsm_state_s* fsm_get_state(fsm_t fsm);
 
 #endif // FSM_H
