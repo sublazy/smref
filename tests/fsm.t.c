@@ -2,9 +2,8 @@
 
 #include "../fsm.h"
 
-enum state {STATE_WAITING, STATE_PROCESSING};
-enum event {EVENT_DATA_AVAILABLE, EVENT_PROCESSING_DONE};
-
+enum state {STATE_NULL, STATE_WAITING, STATE_PROCESSING};
+enum event {EVENT_NULL, EVENT_DATA_AVAILABLE, EVENT_PROCESSING_DONE};
 
 static fsm_state_t dummy_processor_table [] = {
     [STATE_WAITING] = {
