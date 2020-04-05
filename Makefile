@@ -24,6 +24,12 @@ code:
 
 diagrams: $(diagram_files)
 
+test:
+	@cd tests; $(MAKE) test
+
+runtests:
+	@cd tests; $(MAKE) runtests
+
 clean:
 	@rm -rf main $(diagram_files)
 
