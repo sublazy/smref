@@ -169,7 +169,7 @@ We can also generate a [plantUML](http://plantuml.com/state-diagram) diagram:
 > gsl -script:fsm_diagram.gsl fsm_tlc.xml
 ```
 
-![TLC state transition diagram](fsm_diagram.png)
+![TLC state transition diagram](fsm_tlc.png)
 
 _Note: You may notice that the XML model describing the state machine for GSL generator resembles [SCXML](https://en.wikipedia.org/wiki/SCXML) specification very closely. This is pure coincidence; I made this implementation before I learned about SCXML._
 
