@@ -59,7 +59,7 @@ fsm_try_transition(fsm_t *fsm)
         fsm->pending_event = 0;
 
         if (next_state_id != 0) {
-            LOG(LOG_INFO, "FSM #%d: transition %d -> %d",
+            LOG(LOG_INFO, "FSM #%u: transition %d -> %d",
                    fsm->id, fsm->current_state->id, next_state_id);
 
             fsm_try_exit_action(fsm);
@@ -79,7 +79,6 @@ fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
 
     uint32_t new_fsm_idx = nof_fsms_in_use;
     struct fsm_s *new_fsm = &fsm_pool[new_fsm_idx];
-    assert (new_fsm != NULL);
     nof_fsms_in_use++;
     assert (nof_fsms_in_use <= NOF_STATEMACHINES);
 
@@ -89,7 +88,7 @@ fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
     new_fsm->current_state = start_state;
     new_fsm->pending_event = 0;
 
-    LOG(LOG_INFO, "Created state machine #%d", new_fsm_idx);
+    LOG(LOG_INFO, "Created state machine #%u", new_fsm_idx);
 
     return new_fsm;
 }
@@ -99,7 +98,7 @@ void fsm_tick(fsm_t *fsm)
     assert(fsm);
 
     LOG(LOG_DBG, "FSM:\tid\tstate\tevent\tname\n"
-           "\t\t%d\t%d\t%d\t%s",
+           "\t\t%u\t%d\t%d\t%s",
            fsm->id, fsm->current_state->id, fsm->pending_event, fsm->name);
     fsm_try_tick_action(fsm);
     fsm_try_transition(fsm);
