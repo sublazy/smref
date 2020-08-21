@@ -22,7 +22,7 @@ typedef enum {
     $(ABBR)_NUMOF_EVENTS
 } fsm_$(abbr)_event_t;
 
-fsm_t fsm_$(abbr)_new(void);
+fsm_t* fsm_$(abbr)_new(void);
 
 #endif // FSM_$(ABBR)_H
 .close
@@ -55,7 +55,7 @@ $(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
 
 /* Public functions
  * -------------------------------------------------------------------------- */
-fsm_t fsm_$(abbr)_new(void)
+fsm_t* fsm_$(abbr)_new(void)
 {
 .   first_state_id = "$(abbr)_state_$(fsm.first_state)"
     return fsm_new($(abbr)_tx_table, &$(abbr)_tx_table[$(FIRST_STATE_ID)]);

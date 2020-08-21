@@ -26,7 +26,7 @@ nof_fsms_in_use = 0;
 /* Private functions
  * ========================================================================== */
 static void
-fsm_try_entry_action(fsm_t fsm)
+fsm_try_entry_action(fsm_t *fsm)
 {
     if (fsm->current_state->on_entry != NULL) {
         fsm->current_state->on_entry();
@@ -34,7 +34,7 @@ fsm_try_entry_action(fsm_t fsm)
 }
 
 static void
-fsm_try_exit_action(fsm_t fsm)
+fsm_try_exit_action(fsm_t *fsm)
 {
     if (fsm->current_state->on_exit != NULL) {
         fsm->current_state->on_exit();
@@ -42,7 +42,7 @@ fsm_try_exit_action(fsm_t fsm)
 }
 
 static void
-fsm_try_tick_action(fsm_t fsm)
+fsm_try_tick_action(fsm_t *fsm)
 {
     if (fsm->current_state->on_tick != NULL) {
         fsm->current_state->on_tick();
@@ -50,7 +50,7 @@ fsm_try_tick_action(fsm_t fsm)
 }
 
 static void
-fsm_try_transition(fsm_t fsm)
+fsm_try_transition(fsm_t *fsm)
 {
     if (fsm->pending_event != 0) {
 
@@ -72,7 +72,7 @@ fsm_try_transition(fsm_t fsm)
 /* Public functions
  * ========================================================================== */
 // TODO start_state belongs in the xml model
-fsm_t fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
+fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
 {
     assert (state_tbl != NULL);
     assert (start_state != NULL);
@@ -94,7 +94,7 @@ fsm_t fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
     return new_fsm;
 }
 
-void fsm_tick(fsm_t fsm)
+void fsm_tick(fsm_t *fsm)
 {
     assert(fsm);
 
@@ -105,17 +105,17 @@ void fsm_tick(fsm_t fsm)
     fsm_try_transition(fsm);
 }
 
-void fsm_send_event(fsm_t fsm, int event)
+void fsm_send_event(fsm_t *fsm, int event)
 {
     fsm->pending_event = event;
 }
 
-int fsm_get_state_id(fsm_t fsm)
+int fsm_get_state_id(fsm_t *fsm)
 {
 	return fsm->current_state->id;
 }
 
-struct fsm_state_s* fsm_get_state(fsm_t fsm)
+struct fsm_state_s* fsm_get_state(fsm_t *fsm)
 {
 	return fsm->current_state;
 }

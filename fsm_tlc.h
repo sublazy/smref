@@ -21,6 +21,6 @@ typedef enum {
     TLC_NUMOF_EVENTS
 } fsm_tlc_event_t;
 
-fsm_t fsm_tlc_new(void);
+fsm_t* fsm_tlc_new(void);
 
 #endif // FSM_TLC_H

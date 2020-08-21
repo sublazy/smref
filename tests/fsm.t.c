@@ -23,7 +23,7 @@ static fsm_state_t dummy_processor_table [] = {
 
 WVTEST_MAIN("FSM-jinn engine tests")
 {
-    fsm_t dummy_processor = fsm_new(
+    fsm_t *dummy_processor = fsm_new(
             dummy_processor_table, &dummy_processor_table[STATE_WAITING]);
 
 	WVFAIL(dummy_processor == NULL);

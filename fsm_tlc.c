@@ -50,7 +50,7 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
 
 /* Public functions
  * -------------------------------------------------------------------------- */
-fsm_t fsm_tlc_new(void)
+fsm_t* fsm_tlc_new(void)
 {
     return fsm_new(tlc_tx_table, &tlc_tx_table[TLC_STATE_OFF]);
 }
