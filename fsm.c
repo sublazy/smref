@@ -109,3 +109,14 @@ void fsm_send_event(fsm_t fsm, int event)
 {
     fsm->pending_event = event;
 }
+
+int fsm_get_state_id(fsm_t fsm)
+{
+	return fsm->current_state->id;
+}
+
+struct fsm_state_s* fsm_get_state(fsm_t fsm)
+{
+	return fsm->current_state;
+}
+
