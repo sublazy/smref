@@ -48,6 +48,7 @@ runtests:
 lint:
 	@cppcheck --std=c99 --quiet \
 		--enable=warning,style,performance,portability,information \
+		--suppress=missingIncludeSystem \
 		$(sources) $(headers)
 
 clean:
