@@ -17,16 +17,16 @@ warning_flags = \
 -Wmisleading-indentation
 
 main: $(sources)
-	gcc --std=c99 $(warning_flags) $(sources) -o $@
+	@gcc --std=c99 $(warning_flags) $(sources) -o $@
 
 fsm_%.c fsm_%.h fsm_%_actions_skel.c: fsm_%.xml fsmgen.gsl
-	gsl -q -script:fsmgen.gsl $<
+	@gsl -q -script:fsmgen.gsl $<
 
 fsm_%.txt: fsm_%.xml fsm_diagram.gsl
-	gsl -q -script:fsm_diagram.gsl $< > $@
+	@gsl -q -script:fsm_diagram.gsl $< > $@
 
 fsm_%.png: fsm_%.txt
-	plantuml $<
+	@plantuml $<
 
 # Phony targets
 # ------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ fsm_%.png: fsm_%.txt
 all: main diagrams
 
 code:
-	gsl -q -script:fsmgen.gsl fsm_tlc.xml
+	@gsl -q -script:fsmgen.gsl fsm_tlc.xml
 
 diagrams: $(diagram_files)
 
