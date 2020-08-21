@@ -1,4 +1,5 @@
 sources = main.c fsm.c fsm_tlc.c fsm_tlc_actions.c
+headers = $(wildcard *.h)
 diagram_files = fsm_tlc.png
 
 main: $(sources)
@@ -29,6 +30,11 @@ test:
 
 runtests:
 	@cd tests; $(MAKE) runtests
+
+lint:
+	@cppcheck --std=c99 --quiet \
+		--enable=warning,style,performance,portability,information \
+		$(sources) $(headers)
 
 clean:
 	@rm -rf main $(diagram_files)
