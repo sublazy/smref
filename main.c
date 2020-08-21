@@ -9,7 +9,7 @@ static int debug_level = LOG_NONE;
 
 int main(void)
 {
-    fsm_t *fsm_tlc = fsm_tlc_new();
+    fsm_t *fsm_tlc = fsm_tlc_new(NULL);
 
     int cnt = 0;
     while(1) {

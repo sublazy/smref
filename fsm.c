@@ -13,6 +13,7 @@ struct fsm_s{
     fsm_state_t *all_states;
     fsm_state_t *current_state;
     int pending_event;
+    void *user_data;
 };
 
 /* Private data
@@ -29,7 +30,7 @@ static void
 fsm_try_entry_action(fsm_t *fsm)
 {
     if (fsm->current_state->on_entry != NULL) {
-        fsm->current_state->on_entry();
+        fsm->current_state->on_entry(fsm->user_data);
     }
 }
 
@@ -37,7 +38,7 @@ static void
 fsm_try_exit_action(fsm_t *fsm)
 {
     if (fsm->current_state->on_exit != NULL) {
-        fsm->current_state->on_exit();
+        fsm->current_state->on_exit(fsm->user_data);
     }
 }
 
@@ -45,7 +46,7 @@ static void
 fsm_try_tick_action(fsm_t *fsm)
 {
     if (fsm->current_state->on_tick != NULL) {
-        fsm->current_state->on_tick();
+        fsm->current_state->on_tick(fsm->user_data);
     }
 }
 
@@ -72,7 +73,7 @@ fsm_try_transition(fsm_t *fsm)
 /* Public functions
  * ========================================================================== */
 // TODO start_state belongs in the xml model
-fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
+fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state, void *user_data)
 {
     assert (state_tbl != NULL);
     assert (start_state != NULL);
@@ -87,6 +88,7 @@ fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state)
     new_fsm->all_states = state_tbl;
     new_fsm->current_state = start_state;
     new_fsm->pending_event = 0;
+    new_fsm->user_data = user_data;
 
     LOG(LOG_INFO, "Created state machine #%u", new_fsm_idx);
 
