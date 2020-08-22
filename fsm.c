@@ -40,6 +40,7 @@ nof_fsms_in_use = 0;
 
 /* Private functions
  * ========================================================================== */
+#ifdef SPARSE
 static void
 fsm_try_entry_action(fsm_t *fsm)
 {
@@ -83,10 +84,49 @@ fsm_try_transition(fsm_t *fsm)
         }
     }
 }
+#endif
 
+#ifdef DENSE
+static void
+fsm_try_entry_action(fsm_t *fsm)
+{
+}
+
+static void
+fsm_try_exit_action(fsm_t *fsm)
+{
+}
+
+static void
+fsm_try_tick_action(fsm_t *fsm)
+{
+}
+
+static void
+fsm_try_transition(fsm_t *fsm)
+{
+    if (fsm->pending_event != 0) {
+
+        int next_state_id = 0;
+        /* int next_state_id = fsm->current_state->transitions[fsm->pending_event]; */
+
+        fsm->pending_event = 0;
+
+        if (next_state_id != 0) {
+            /* LOG(LOG_INFO, "FSM #%u: transition %d -> %d", */
+            /*        fsm->id, fsm->current_state->id, next_state_id); */
+
+            fsm_try_exit_action(fsm);
+            /* fsm->current_state = &fsm->transition_lut[next_state_id]; */
+            fsm_try_entry_action(fsm);
+        }
+    }
+}
+#endif
 /* Public functions
  * ========================================================================== */
 // TODO start_state belongs in the xml model
+#ifdef SPARSE
 fsm_t*
 fsm_new(struct fsm_state* transition_lut, struct fsm_state* start_state,
         void *user_data)
@@ -110,6 +150,36 @@ fsm_new(struct fsm_state* transition_lut, struct fsm_state* start_state,
 
     return new_fsm;
 }
+#endif
+
+#ifdef DENSE
+fsm_t*
+fsm_new(uint8_t (*transition_lut)[], void (*(*action_lut)[])(void*),
+         int start_state_id, void *user_data)
+{
+    assert (transition_lut != NULL);
+    assert (action_lut != NULL);
+    assert (start_state_id != 0);
+
+    uint32_t new_fsm_idx = nof_fsms_in_use;
+    struct fsm_s *new_fsm = &fsm_pool[new_fsm_idx];
+    nof_fsms_in_use++;
+    assert (nof_fsms_in_use <= NOF_STATEMACHINES);
+
+    new_fsm->id = new_fsm_idx;
+    new_fsm->name = "N/A";
+    new_fsm->transition_lut = transition_lut;
+    new_fsm->action_lut = action_lut;
+    new_fsm->current_state = start_state_id;
+    new_fsm->pending_event = 0;
+    new_fsm->user_data = user_data;
+
+    LOG(LOG_INFO, "Created state machine #%u", new_fsm_idx);
+
+    return new_fsm;
+}
+#endif
+
 
 void fsm_tick(fsm_t *fsm)
 {
@@ -117,7 +187,7 @@ void fsm_tick(fsm_t *fsm)
 
     LOG(LOG_DBG, "FSM:\tid\tstate\tevent\tname\n"
            "\t\t%u\t%d\t%d\t%s",
-           fsm->id, fsm->current_state->id, fsm->pending_event, fsm->name);
+           fsm->id, fsm->current_state, fsm->pending_event, fsm->name);
     fsm_try_tick_action(fsm);
     fsm_try_transition(fsm);
 }
@@ -128,12 +198,6 @@ void fsm_send_event(fsm_t *fsm, int event)
 }
 
 int fsm_get_state_id(fsm_t *fsm)
-{
-	return fsm->current_state->id;
-}
-
-struct fsm_state*
-fsm_get_state(fsm_t *fsm)
 {
 	return fsm->current_state;
 }
