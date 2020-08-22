@@ -16,7 +16,7 @@ warning_flags = \
 -Wold-style-definition \
 -Wmisleading-indentation
 
-main: $(sources)
+main: $(sources) $(headers)
 	@gcc --std=c99 $(warning_flags) $(sources) -o $@
 
 fsm_%.c fsm_%.h fsm_%_actions_skel.c: fsm_%.xml fsmgen.gsl
