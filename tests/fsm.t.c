@@ -174,54 +174,57 @@ WVTEST_MAIN("FSM-jinn dense LUT tests")
             &dense_processor_transition_lut, &dense_processor_action_lut,
             STATE_WAITING, (void*) &cpu_desktop);
 
-	WVFAIL(cpu_desktop.fsm == NULL);
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_WAITING);
+    // shortcut. m == "machine"
+    fsm_t *m = cpu_desktop.fsm;
+
+	WVFAIL(m == NULL);
+	WVPASS(fsm_get_state_id(m) == STATE_WAITING);
 
 	// Just ticking it shouldn't cause state change.
-	fsm_tick(cpu_desktop.fsm);
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_WAITING);
+	fsm_tick(m);
+	WVPASS(fsm_get_state_id(m) == STATE_WAITING);
 
 	// Let's trigger a state transition.
-	fsm_send_event(cpu_desktop.fsm, EVENT_DATA_AVAILABLE);
+	fsm_send_event(m, EVENT_DATA_AVAILABLE);
 	// It's not supposed to change state without a tick.
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_WAITING);
+	WVPASS(fsm_get_state_id(m) == STATE_WAITING);
 
     // Processing-on-entry action should not be executed yet.
     WVPASSEQ(active_cpu_cores, 0);
     WVPASSEQ(executed_ticks, 0);
 
-	fsm_tick(cpu_desktop.fsm);
+	fsm_tick(m);
 	// After the tick we expect the new state.
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_PROCESSING);
+	WVPASS(fsm_get_state_id(m) == STATE_PROCESSING);
 
     // Processing-on-entry action should have ran by now.
     WVPASSEQ(active_cpu_cores, cpu_desktop.num_of_cores);
     WVPASSEQ(executed_ticks, 0);
 
-	fsm_tick(cpu_desktop.fsm);
+	fsm_tick(m);
     WVPASSEQ(executed_ticks, 1);
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_PROCESSING);
+	WVPASS(fsm_get_state_id(m) == STATE_PROCESSING);
 
-	fsm_tick(cpu_desktop.fsm);
+	fsm_tick(m);
     WVPASSEQ(executed_ticks, 2);
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_PROCESSING);
+	WVPASS(fsm_get_state_id(m) == STATE_PROCESSING);
 
-	fsm_send_event(cpu_desktop.fsm, EVENT_PROCESSING_DONE);
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_PROCESSING);
+	fsm_send_event(m, EVENT_PROCESSING_DONE);
+	WVPASS(fsm_get_state_id(m) == STATE_PROCESSING);
     WVPASSEQ(active_cpu_cores, cpu_desktop.num_of_cores);
 
-	fsm_tick(cpu_desktop.fsm);
+	fsm_tick(m);
     // Just before state transition, on_tick action of the previous state runs
     // one last time.
     WVPASSEQ(executed_ticks, 3);
     WVPASSEQ(active_cpu_cores, 0);
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_WAITING);
+	WVPASS(fsm_get_state_id(m) == STATE_WAITING);
 
-	fsm_tick(cpu_desktop.fsm);
+	fsm_tick(m);
     WVPASSEQ(executed_ticks, 3);
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_WAITING);
+	WVPASS(fsm_get_state_id(m) == STATE_WAITING);
 
-	fsm_tick(cpu_desktop.fsm);
+	fsm_tick(m);
     WVPASSEQ(executed_ticks, 3);
-	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_WAITING);
+	WVPASS(fsm_get_state_id(m) == STATE_WAITING);
 }
