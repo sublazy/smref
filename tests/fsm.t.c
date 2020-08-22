@@ -46,18 +46,19 @@ static struct fsm_state dummy_processor_lut [] = {
 };
 #endif
 
+#ifdef DENSE
 static uint8_t dense_processor_transition_lut [] = {
-    // number of states,
-    2,
+    // LUT header: size of the array, number of states,
+    12, 2,
 
-    // state id, registered actions, number of exits,
-    STATE_WAITING, 0x0, 1,
-        // exit event, destination state,
+    // state header: state id, state actions, number of exits,
+    [2] = STATE_WAITING, 0x0, 1,
+        // event entries: exit event, destination state,
         EVENT_DATA_AVAILABLE, STATE_PROCESSING,
 
-    // state id, registered actions, number of exits,
-    STATE_PROCESSING, 0x7, 1,
-        // exit event, destination state,
+    // state header: state id, state actions, number of exits,
+    [7] = STATE_PROCESSING, 0x7, 1,
+        // event entries: exit event, destination state,
         EVENT_PROCESSING_DONE, STATE_WAITING,
 };
 
@@ -68,6 +69,7 @@ static void (*dense_processor_action_lut[])(void*) = {
     processing_on_exit,
     processing_on_tick,
 };
+#endif
 
 
 
