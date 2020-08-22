@@ -16,8 +16,10 @@ warning_flags = \
 -Wold-style-definition \
 -Wmisleading-indentation
 
+defines = -DDENSE
+
 main: $(sources) $(headers)
-	@gcc --std=c99 $(warning_flags) $(sources) -o $@
+	@gcc --std=c99 $(warning_flags) $(defines) $(sources) -o $@
 
 fsm_%.c fsm_%.h fsm_%_actions_skel.c: fsm_%.xml fsmgen.gsl
 	@gsl -q -script:fsmgen.gsl $<

@@ -1,5 +1,5 @@
 testrunner: wvtest/c/wvtest.c wvtest/c/wvtestmain.c fsm.t.c ../fsm.c
-	gcc -D WVTEST_CONFIGURED -o $@ -I. -I wvtest/c $^
+	gcc -D WVTEST_CONFIGURED -DDENSE -o $@ -I. -I wvtest/c $^
 
 runtests: testrunner
 	@./testrunner
