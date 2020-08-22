@@ -25,7 +25,7 @@ void processing_on_tick(void *user_data);
 static int active_cpu_cores = 0;
 static int executed_ticks = 0;
 
-static struct fsm_state dummy_processor_table [] = {
+static struct fsm_state dummy_processor_lut [] = {
     [STATE_WAITING] = {
         .id = STATE_WAITING,
         .transitions = {
@@ -71,7 +71,7 @@ WVTEST_MAIN("FSM-jinn engine tests")
     cpu_desktop.num_of_cores = 4;
     cpu_desktop.generation = 7;
     cpu_desktop.fsm = fsm_new(
-            dummy_processor_table, &dummy_processor_table[STATE_WAITING],
+            dummy_processor_lut, &dummy_processor_lut[STATE_WAITING],
             (void*) &cpu_desktop);
 
 	WVFAIL(cpu_desktop.fsm == NULL);
@@ -82,7 +82,7 @@ WVTEST_MAIN("FSM-jinn engine tests")
 	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_WAITING);
 
     // Make sure that we can also obtain the full state struct, not just the id.
-    WVPASS(fsm_get_state(cpu_desktop.fsm) == &dummy_processor_table[STATE_WAITING]);
+    WVPASS(fsm_get_state(cpu_desktop.fsm) == &dummy_processor_lut[STATE_WAITING]);
 
 	// Let's trigger a state transition.
 	fsm_send_event(cpu_desktop.fsm, EVENT_DATA_AVAILABLE);
@@ -108,7 +108,7 @@ WVTEST_MAIN("FSM-jinn engine tests")
 	fsm_tick(cpu_desktop.fsm);
     WVPASSEQ(executed_ticks, 2);
 	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_PROCESSING);
-    WVPASS(fsm_get_state(cpu_desktop.fsm) == &dummy_processor_table[STATE_PROCESSING]);
+    WVPASS(fsm_get_state(cpu_desktop.fsm) == &dummy_processor_lut[STATE_PROCESSING]);
 
 	fsm_send_event(cpu_desktop.fsm, EVENT_PROCESSING_DONE);
 	WVPASS(fsm_get_state_id(cpu_desktop.fsm) == STATE_PROCESSING);

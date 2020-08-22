@@ -10,7 +10,7 @@ static int debug_level = LOG_NONE;
 struct fsm_s{
     uint32_t id;
     char * name;
-    struct fsm_state *all_states;
+    struct fsm_state *transition_lut;
     struct fsm_state *current_state;
     int pending_event;
     void *user_data;
@@ -64,7 +64,7 @@ fsm_try_transition(fsm_t *fsm)
                    fsm->id, fsm->current_state->id, next_state_id);
 
             fsm_try_exit_action(fsm);
-            fsm->current_state = &fsm->all_states[next_state_id];
+            fsm->current_state = &fsm->transition_lut[next_state_id];
             fsm_try_entry_action(fsm);
         }
     }
@@ -74,10 +74,10 @@ fsm_try_transition(fsm_t *fsm)
  * ========================================================================== */
 // TODO start_state belongs in the xml model
 fsm_t*
-fsm_new(struct fsm_state* state_tbl, struct fsm_state* start_state,
+fsm_new(struct fsm_state* transition_lut, struct fsm_state* start_state,
         void *user_data)
 {
-    assert (state_tbl != NULL);
+    assert (transition_lut != NULL);
     assert (start_state != NULL);
 
     uint32_t new_fsm_idx = nof_fsms_in_use;
@@ -87,7 +87,7 @@ fsm_new(struct fsm_state* state_tbl, struct fsm_state* start_state,
 
     new_fsm->id = new_fsm_idx;
     new_fsm->name = "N/A";
-    new_fsm->all_states = state_tbl;
+    new_fsm->transition_lut = transition_lut;
     new_fsm->current_state = start_state;
     new_fsm->pending_event = 0;
     new_fsm->user_data = user_data;

@@ -19,7 +19,7 @@ struct fsm_state {
 
 typedef struct fsm_s fsm_t;
 
-fsm_t* fsm_new(struct fsm_state* state_tbl, struct fsm_state* start_state, void *user_data);
+fsm_t* fsm_new(struct fsm_state *transition_lut, struct fsm_state *start_state, void *user_data);
 void fsm_tick(fsm_t *fsm);
 void fsm_send_event(fsm_t *fsm, int event);
 int fsm_get_state_id(fsm_t *fsm);
