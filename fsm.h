@@ -11,15 +11,15 @@
 
 typedef struct fsm_state_s {
     int id;
-    void (*on_entry)(void);
-    void (*on_tick)(void);
-    void (*on_exit)(void);
+    void (*on_entry)(void*);
+    void (*on_tick)(void*);
+    void (*on_exit)(void*);
     int transitions[NOF_TRANSITIONS_MAX];
 } fsm_state_t;
 
 typedef struct fsm_s fsm_t;
 
-fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state);
+fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state, void *user_data);
 void fsm_tick(fsm_t *fsm);
 void fsm_send_event(fsm_t *fsm, int event);
 int fsm_get_state_id(fsm_t *fsm);

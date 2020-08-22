@@ -22,7 +22,7 @@ typedef enum {
     $(ABBR)_NUMOF_EVENTS
 } fsm_$(abbr)_event_t;
 
-fsm_t* fsm_$(abbr)_new(void);
+fsm_t* fsm_$(abbr)_new(void *user_data);
 
 #endif // FSM_$(ABBR)_H
 .close
@@ -55,10 +55,10 @@ $(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
 
 /* Public functions
  * -------------------------------------------------------------------------- */
-fsm_t* fsm_$(abbr)_new(void)
+fsm_t* fsm_$(abbr)_new(void *user_data)
 {
 .   first_state_id = "$(abbr)_state_$(fsm.first_state)"
-    return fsm_new($(abbr)_tx_table, &$(abbr)_tx_table[$(FIRST_STATE_ID)]);
+    return fsm_new($(abbr)_tx_table, &$(abbr)_tx_table[$(FIRST_STATE_ID)], user_data);
 }
 
 .close
@@ -67,9 +67,9 @@ fsm_t* fsm_$(abbr)_new(void)
 #define FSM_$(ABBR)_ACTIONS_H
 
 .for fsm->states
-void $(abbr)_$(name)_on_entry(void);
-void $(abbr)_$(name)_on_exit(void);
-void $(abbr)_$(name)_on_tick(void);
+void $(abbr)_$(name)_on_entry(void *user_data);
+void $(abbr)_$(name)_on_exit(void *user_data);
+void $(abbr)_$(name)_on_tick(void *user_data);
 .endfor
 
 #endif // FSM_$(ABBR)_ACTIONS_H
@@ -78,15 +78,15 @@ void $(abbr)_$(name)_on_tick(void);
 #include "fsm_$(abbr)_actions.h"
 
 .for fsm->states
-void $(abbr)_$(name)_on_entry(void)
+void $(abbr)_$(name)_on_entry(void *user_data)
 {
 }
 
-void $(abbr)_$(name)_on_exit(void)
+void $(abbr)_$(name)_on_exit(void *user_data)
 {
 }
 
-void $(abbr)_$(name)_on_tick(void)
+void $(abbr)_$(name)_on_tick(void *user_data)
 {
 }
 
