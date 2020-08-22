@@ -5,7 +5,7 @@
 
 /* Transitions
  * -------------------------------------------------------------------------- */
-static fsm_state_t
+static struct fsm_state
 tlc_tx_table [TLC_NUMOF_STATES] = {
     [TLC_STATE_OFF] = {
         .id = TLC_STATE_OFF,

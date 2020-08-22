@@ -25,7 +25,7 @@ void processing_on_tick(void *user_data);
 static int active_cpu_cores = 0;
 static int executed_ticks = 0;
 
-static fsm_state_t dummy_processor_table [] = {
+static struct fsm_state dummy_processor_table [] = {
     [STATE_WAITING] = {
         .id = STATE_WAITING,
         .transitions = {

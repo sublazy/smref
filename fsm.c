@@ -10,8 +10,8 @@ static int debug_level = LOG_NONE;
 struct fsm_s{
     uint32_t id;
     char * name;
-    fsm_state_t *all_states;
-    fsm_state_t *current_state;
+    struct fsm_state *all_states;
+    struct fsm_state *current_state;
     int pending_event;
     void *user_data;
 };
@@ -73,7 +73,9 @@ fsm_try_transition(fsm_t *fsm)
 /* Public functions
  * ========================================================================== */
 // TODO start_state belongs in the xml model
-fsm_t* fsm_new(fsm_state_t* state_tbl, fsm_state_t* start_state, void *user_data)
+fsm_t*
+fsm_new(struct fsm_state* state_tbl, struct fsm_state* start_state,
+        void *user_data)
 {
     assert (state_tbl != NULL);
     assert (start_state != NULL);
@@ -116,7 +118,8 @@ int fsm_get_state_id(fsm_t *fsm)
 	return fsm->current_state->id;
 }
 
-struct fsm_state_s* fsm_get_state(fsm_t *fsm)
+struct fsm_state*
+fsm_get_state(fsm_t *fsm)
 {
 	return fsm->current_state;
 }
