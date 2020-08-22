@@ -25,6 +25,7 @@ void processing_on_tick(void *user_data);
 static int active_cpu_cores = 0;
 static int executed_ticks = 0;
 
+#ifdef SPARSE
 static struct fsm_state dummy_processor_lut [] = {
     [STATE_WAITING] = {
         .id = STATE_WAITING,
@@ -42,6 +43,32 @@ static struct fsm_state dummy_processor_lut [] = {
         .on_tick = processing_on_tick,
     },
 };
+#endif
+
+static uint8_t dense_processor_transition_lut [] = {
+    // number of states,
+    2,
+
+    // state id, registered actions, number of exits,
+    STATE_WAITING, 0x0, 1,
+        // exit event, destination state,
+        EVENT_DATA_AVAILABLE, STATE_PROCESSING,
+
+    // state id, registered actions, number of exits,
+    STATE_PROCESSING, 0x7, 1,
+        // exit event, destination state,
+        EVENT_PROCESSING_DONE, STATE_WAITING,
+};
+
+static void (*dense_processor_action_lut[])(void*) = {
+    // 0 actions hooks of STATE_WAITING:
+    // 3 actions hooks of STATE_PROCESSING:
+    processing_on_entry,
+    processing_on_exit,
+    processing_on_tick,
+};
+
+
 
 /* Helper functions
  * ---------------------------------------------------------------------- */

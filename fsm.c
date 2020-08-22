@@ -7,6 +7,7 @@ static int debug_level = LOG_NONE;
 
 /* Private types
  * ========================================================================== */
+#ifdef SPARSE
 struct fsm_s{
     uint32_t id;
     char * name;
@@ -15,6 +16,19 @@ struct fsm_s{
     int pending_event;
     void *user_data;
 };
+#endif
+
+#ifdef DENSE
+struct fsm_s{
+    uint32_t id;
+    char *name;
+    uint8_t (*transition_lut)[];
+    void (*(*action_lut)[])(void*);
+    int current_state;
+    int pending_event;
+    void *user_data;
+};
+#endif
 
 /* Private data
  * ========================================================================== */
