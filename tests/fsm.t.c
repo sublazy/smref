@@ -243,11 +243,6 @@ WVTEST_MAIN("FSM-jinn dense LUT tests")
     WVPASSEQ(executed_ticks, 3);
 	WVPASS(fsm_get_state_id(m) == STATE_WAITING);
 
-    WVPASS(lut_next_state_offset(m, 0) == 2);
-    WVPASS(lut_next_state_offset(m, 2) == 8);
-    WVPASS(lut_next_state_offset(m, 8) == -1);
-    WVPASS(lut_next_state_offset(m, 15) == -2);
-
     WVPASSEQ(*state_descriptor(m, STATE_WAITING), STATE_WAITING);
     WVPASSEQ(*state_descriptor(m, STATE_PROCESSING), STATE_PROCESSING);
 
@@ -256,5 +251,6 @@ WVTEST_MAIN("FSM-jinn dense LUT tests")
 
     WVPASS(first_state(m) == state_descriptor(m, STATE_WAITING));
     WVPASS(next_state(m, state_descriptor(m, STATE_WAITING)) == state_descriptor(m, STATE_PROCESSING));
+    WVPASS(next_state(m, state_descriptor(m, STATE_PROCESSING)) == NULL);
 }
 
