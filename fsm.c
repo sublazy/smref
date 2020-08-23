@@ -22,11 +22,23 @@ struct fsm_s{
 #endif
 
 #ifdef DENSE
+
+typedef void (*action_ptr_t)(void*);
+
 struct fsm_s{
     uint32_t id;
     char *name;
+
+    // Pointer to the full state transition LUT
     uint8_t (*transition_lut)[];
-    void (*(*action_lut)[])(void*);
+
+    // Pointer to the full state transition LUT
+    action_ptr_t (*action_lut)[];
+
+    // Pointer to actions associated with the current state. Points to somewhere in
+    // the action_lut, so that we don't need to scan it from start each time.
+    action_ptr_t (*state_actions)[];
+
     int current_state_id;
     int pending_event_id;
     void *user_data;
@@ -93,34 +105,28 @@ fsm_try_transition(fsm_t *fsm)
 #ifdef DENSE
 
 #define SIZEOF_LUT_HEADER     2
-#define SIZEOF_STATE_HEADER   3
+#define SIZEOF_STATE_HEADER   4
 #define SIZEOF_EVENT_ENTRY    2
 
 #define IDX_FIRST_STATE_HEADER  (0 + SIZEOF_LUT_HEADER)
 
 // Offsets relative to state header
-#define OFFSET_STATE_ID       0
-#define OFFSET_STATE_ACTIONS  1
-#define OFFSET_NUM_EXITS      2
+#define OFFSET_STATE_ID     0
+#define OFFSET_NUM_EXITS    1
+#define OFFSET_ACTION_MAP   2
+#define OFFSET_ACTIONS      3
 
 // Offsets relative to event entry
 #define OFFSET_EVENT_ID  0
 #define OFFSET_DST_STATE 1
 
-static void
-fsm_try_entry_action(fsm_t *fsm)
-{
-}
+#define ACTION_MASK_ENTRY 0x1
+#define ACTION_MASK_EXIT  0x2
+#define ACTION_MASK_TICK  0x4
 
-static void
-fsm_try_exit_action(fsm_t *fsm)
-{
-}
-
-static void
-fsm_try_tick_action(fsm_t *fsm)
-{
-}
+#define OFFSET_ACTION_ENTRY 0
+#define OFFSET_ACTION_EXIT  1
+#define OFFSET_ACTION_TICK  2
 
 // Return the index of the next state, given the location of some state
 // descriptor in the LUT. If the given offset is 0, offset of the first
@@ -199,10 +205,83 @@ static int target_state_id(uint8_t *event)
 static int get_target_state_id(fsm_t *fsm)
 {
     // We can asume there is a pending event, because the caller checks it.
-    assert(fsm->pending_event_id != EVENT_NULL);
+    assert(fsm->pending_event_id != 0);
     uint8_t *state_now = state_descriptor(fsm, fsm->current_state_id);
     uint8_t *event = event_descriptor(state_now, fsm->pending_event_id);
     return target_state_id(event);
+}
+
+
+static action_ptr_t get_state_entry_action(fsm_t *fsm, uint8_t *state)
+{
+    uint8_t action_map = *(state + OFFSET_ACTION_MAP);
+
+    if (action_map & ACTION_MASK_ENTRY) {
+        printf("----- found entry action\n");
+        return (*fsm->state_actions)[OFFSET_ACTION_ENTRY];
+    }
+    else {
+        printf("------- entry action not found\n");
+        return NULL;
+    }
+}
+
+static action_ptr_t get_state_exit_action(fsm_t *fsm, uint8_t *state)
+{
+    uint8_t action_map = *(state + OFFSET_ACTION_MAP);
+
+    if (action_map & ACTION_MASK_EXIT) {
+        printf("----- found exit action\n");
+        return (*fsm->state_actions)[OFFSET_ACTION_EXIT];
+    }
+    else {
+        printf("------- exit action not found\n");
+        return NULL;
+    }
+}
+
+static action_ptr_t get_state_tick_action(fsm_t *fsm, uint8_t *state)
+{
+    uint8_t action_map = *(state + OFFSET_ACTION_MAP);
+
+    if (action_map & ACTION_MASK_TICK) {
+        printf("----- found tick action\n");
+        return (*fsm->state_actions)[OFFSET_ACTION_TICK];
+    }
+    else {
+        printf("------- tick action not found\n");
+        return NULL;
+    }
+}
+
+static void
+fsm_try_entry_action(fsm_t *fsm)
+{
+    uint8_t *state = state_descriptor(fsm, fsm->current_state_id);
+    action_ptr_t action = get_state_entry_action(fsm, state);
+    if (action != NULL) {
+        (*action)(fsm->user_data);
+    }
+}
+
+static void
+fsm_try_exit_action(fsm_t *fsm)
+{
+    uint8_t *state = state_descriptor(fsm, fsm->current_state_id);
+    action_ptr_t action = get_state_exit_action(fsm, state);
+    if (action != NULL) {
+        (*action)(fsm->user_data);
+    }
+}
+
+static void
+fsm_try_tick_action(fsm_t *fsm)
+{
+    uint8_t *state = state_descriptor(fsm, fsm->current_state_id);
+    action_ptr_t action = get_state_tick_action(fsm, state);
+    if (action != NULL) {
+        (*action)(fsm->user_data);
+    }
 }
 
 static void
@@ -217,11 +296,12 @@ fsm_try_transition(fsm_t *fsm)
         if (next_state_id != 0) {
             /* LOG(LOG_INFO, "FSM #%u: transition %d -> %d", */
             /*        fsm->id, fsm->current_state->id, next_state_id); */
+            /* printf("making transition from state %d to %d\n", fsm->current_state_id, next_state_id); */
 
             fsm_try_exit_action(fsm);
-            printf("making transition from state %d to %d\n", fsm->current_state_id, next_state_id);
             fsm->current_state_id = next_state_id;
-            /* fsm->current_state = &fsm->transition_lut[next_state_id]; */
+            uint8_t *state = state_descriptor(fsm, next_state_id);
+            fsm->state_actions = (action_ptr_t (*)[]) &((*fsm->action_lut)[*(state + OFFSET_ACTIONS)]);
             fsm_try_entry_action(fsm);
         }
     }
@@ -295,11 +375,13 @@ fsm_new(uint8_t (*transition_lut)[], void (*(*action_lut)[])(void*),
     new_fsm->id = new_fsm_idx;
     new_fsm->name = "N/A";
     new_fsm->transition_lut = transition_lut;
-    new_fsm->action_lut = action_lut;
     new_fsm->current_state_id = start_state_id;
+    new_fsm->action_lut = action_lut;
     new_fsm->pending_event_id = 0;
     new_fsm->user_data = user_data;
 
+    uint8_t *state = state_descriptor(new_fsm, start_state_id);
+    new_fsm->state_actions = (action_ptr_t (*)[]) &((*action_lut)[*(state + OFFSET_ACTIONS)]);
     LOG(LOG_INFO, "Created state machine #%u", new_fsm_idx);
 
     return new_fsm;

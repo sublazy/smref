@@ -20,6 +20,7 @@ struct dummy_processor_s {
 void processing_on_entry(void *user_data);
 void processing_on_exit(void *user_data);
 void processing_on_tick(void *user_data);
+void waiting_on_tick(void *user_data);
 
 /* Data
  * ---------------------------------------------------------------------- */
@@ -49,21 +50,24 @@ static struct fsm_state dummy_processor_lut [] = {
 #ifdef DENSE
 static uint8_t dense_processor_transition_lut [] = {
     // LUT header: size of the array, number of states,
-    12, 2,
+    14, 2,
 
-    // state header: state id, state actions, number of exits,
-    [2] = STATE_WAITING, 0x0, 1,
+    // state header: state id, number of exits, state actions, action lut offset,
+    [2] = STATE_WAITING, 1, (ACTION_MASK_TICK), 0,
         // event entries: exit event, destination state,
         EVENT_DATA_AVAILABLE, STATE_PROCESSING,
 
-    // state header: state id, state actions, number of exits,
-    [7] = STATE_PROCESSING, 0x7, 1,
+    // state header: state id, number of exits, state actions, action lut offset,
+    [8] = STATE_PROCESSING, 1, (ACTION_MASK_ENTRY | ACTION_MASK_EXIT | ACTION_MASK_TICK), 3,
         // event entries: exit event, destination state,
         EVENT_PROCESSING_DONE, STATE_WAITING,
 };
 
 static void (*dense_processor_action_lut[])(void*) = {
-    // 0 actions hooks of STATE_WAITING:
+    // 1 actions hooks of STATE_WAITING:
+    NULL,
+    NULL,
+    waiting_on_tick,
     // 3 actions hooks of STATE_PROCESSING:
     processing_on_entry,
     processing_on_exit,
@@ -77,20 +81,29 @@ static void (*dense_processor_action_lut[])(void*) = {
  * ---------------------------------------------------------------------- */
 void processing_on_entry(void *user_data)
 {
+    printf("--- processing_on_entry\n");
     struct dummy_processor_s *self = user_data;
     active_cpu_cores += self->num_of_cores;
 }
 
 void processing_on_exit(void *user_data)
 {
+    printf("--- processing_on_exit\n");
     struct dummy_processor_s *self = user_data;
     active_cpu_cores -= self->num_of_cores;
 }
 
 void processing_on_tick(void *user_data)
 {
+    printf("--- processing_on_tick\n");
     struct dummy_processor_s *self = user_data;
     executed_ticks++;
+}
+
+void waiting_on_tick(void *user_data)
+{
+    (void)user_data;
+    printf(">>> waiting...\n");
 }
 
 /* Tests
@@ -231,9 +244,9 @@ WVTEST_MAIN("FSM-jinn dense LUT tests")
 	WVPASS(fsm_get_state_id(m) == STATE_WAITING);
 
     WVPASS(lut_next_state_offset(m, 0) == 2);
-    WVPASS(lut_next_state_offset(m, 2) == 7);
-    WVPASS(lut_next_state_offset(m, 7) == -1);
-    WVPASS(lut_next_state_offset(m, 12) == -2);
+    WVPASS(lut_next_state_offset(m, 2) == 8);
+    WVPASS(lut_next_state_offset(m, 8) == -1);
+    WVPASS(lut_next_state_offset(m, 15) == -2);
 
     WVPASSEQ(*state_descriptor(m, STATE_WAITING), STATE_WAITING);
     WVPASSEQ(*state_descriptor(m, STATE_PROCESSING), STATE_PROCESSING);
