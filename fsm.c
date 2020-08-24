@@ -16,7 +16,7 @@ struct fsm_s{
     char * name;
     struct fsm_state *transition_lut;
     struct fsm_state *current_state;
-    int pending_event;
+    int pending_event_id;
     void *user_data;
 };
 #endif
@@ -86,11 +86,11 @@ fsm_try_tick_action(fsm_t *fsm)
 static void
 fsm_try_transition(fsm_t *fsm)
 {
-    if (fsm->pending_event != 0) {
+    if (fsm->pending_event_id != 0) {
 
-        int next_state_id = fsm->current_state->transitions[fsm->pending_event];
+        int next_state_id = fsm->current_state->transitions[fsm->pending_event_id];
 
-        fsm->pending_event = 0;
+        fsm->pending_event_id = 0;
 
         if (next_state_id != 0) {
             LOG(LOG_INFO, "FSM #%u: transition %d -> %d",
@@ -340,7 +340,7 @@ fsm_new(struct fsm_state* transition_lut, struct fsm_state* start_state,
     new_fsm->name = "N/A";
     new_fsm->transition_lut = transition_lut;
     new_fsm->current_state = start_state;
-    new_fsm->pending_event = 0;
+    new_fsm->pending_event_id = 0;
     new_fsm->user_data = user_data;
 
     LOG(LOG_INFO, "Created state machine #%u", new_fsm_idx);
@@ -354,7 +354,7 @@ void fsm_tick(fsm_t *fsm)
 
     LOG(LOG_DBG, "FSM:\tid\tstate\tevent\tname\n"
            "\t\t%u\t%d\t%d\t%s",
-           fsm->id, fsm->current_state->id, fsm->pending_event, fsm->name);
+           fsm->id, fsm->current_state->id, fsm->pending_event_id, fsm->name);
     fsm_try_tick_action(fsm);
     fsm_try_transition(fsm);
 }
@@ -406,7 +406,7 @@ void fsm_tick(fsm_t *fsm)
 
     /* LOG(LOG_DBG, "FSM:\tid\tstate\tevent\tname\n" */
     /*        "\t\t%u\t%d\t%d\t%s", */
-    /*        fsm->id, fsm->current_state, fsm->pending_event, fsm->name); */
+    /*        fsm->id, fsm->current_state, fsm->pending_event_id, fsm->name); */
     fsm_try_tick_action(fsm);
     fsm_try_transition(fsm);
 }
