@@ -16,7 +16,7 @@ warning_flags = \
 -Wold-style-definition \
 -Wmisleading-indentation
 
-defines = -DDENSE
+defines = -DSPARSE
 
 main: $(sources) $(headers)
 	@gcc --std=c99 $(warning_flags) $(defines) $(sources) -o $@
