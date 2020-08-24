@@ -20,12 +20,13 @@ struct fsm_state {
 #endif
 
 typedef struct fsm_s fsm_t;
+typedef void (*fsm_action_ptr_t)(void*);
 
 #ifdef SPARSE
 fsm_t* fsm_new(struct fsm_state *transition_lut, struct fsm_state *start_state, void *user_data);
 #endif
 #ifdef DENSE
-fsm_t* fsm_new(uint8_t (*transition_lut)[], void (*(*action_lut)[])(void*), int start_state_id, void *user_data);
+fsm_t *fsm_new(uint8_t *transition_lut, fsm_action_ptr_t *action_lut, int start_state_id, void *user_data);
 #endif
 void fsm_tick(fsm_t *fsm);
 void fsm_send_event(fsm_t *fsm, int event);

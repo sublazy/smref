@@ -63,7 +63,7 @@ static uint8_t dense_processor_transition_lut [] = {
         EVENT_PROCESSING_DONE, STATE_WAITING,
 };
 
-static void (*dense_processor_action_lut[])(void*) = {
+static fsm_action_ptr_t dense_processor_action_lut[] = {
     // 1 actions hooks of STATE_WAITING:
     NULL,
     NULL,
@@ -185,9 +185,8 @@ WVTEST_MAIN("FSM-jinn dense LUT tests")
     struct dummy_processor_s cpu_desktop = {};
     cpu_desktop.num_of_cores = 4;
     cpu_desktop.generation = 7;
-    cpu_desktop.fsm = fsm_new(
-            &dense_processor_transition_lut, &dense_processor_action_lut,
-            STATE_WAITING, (void*) &cpu_desktop);
+    cpu_desktop.fsm = fsm_new((uint8_t*) &dense_processor_transition_lut,
+            (void (**)(void*))&dense_processor_action_lut, STATE_WAITING, (void*) &cpu_desktop);
 
     // shortcut. m == "machine"
     fsm_t *m = cpu_desktop.fsm;

@@ -23,21 +23,19 @@ struct fsm_s{
 
 #ifdef DENSE
 
-typedef void (*action_ptr_t)(void*);
-
 struct fsm_s{
     uint32_t id;
     char *name;
 
     // Pointer to the full state transition LUT
-    uint8_t (*transition_lut)[];
+    uint8_t *transition_lut;
 
     // Pointer to the full state transition LUT
-    action_ptr_t (*action_lut)[];
+    fsm_action_ptr_t *action_lut;
 
     // Pointer to actions associated with the current state. Points to somewhere in
     // the action_lut, so that we don't need to scan it from start each time.
-    action_ptr_t (*state_actions)[];
+    fsm_action_ptr_t *state_actions;
 
     uint8_t *current_state;
 
@@ -147,9 +145,8 @@ static int id(uint8_t *state)
 
 static bool is_state_within_lut(const fsm_t *fsm, uint8_t *state)
 {
-    int transition_lut_size = (*fsm->transition_lut)[OFFSET_LUT_SIZE];
-    int offset = state - (uint8_t*) fsm->transition_lut;
-    if (offset < transition_lut_size)
+    int lut_size = *(fsm->transition_lut + OFFSET_LUT_SIZE);
+    if (state < (fsm->transition_lut + lut_size))
         return true;
     else
         return false;
@@ -157,7 +154,7 @@ static bool is_state_within_lut(const fsm_t *fsm, uint8_t *state)
 
 static uint8_t* first_state(const fsm_t *fsm)
 {
-    return &((*fsm->transition_lut)[IDX_FIRST_STATE_HEADER]);
+    return fsm->transition_lut + IDX_FIRST_STATE_HEADER;
 }
 
 // Return a state descriptor following the given one,
@@ -224,13 +221,13 @@ static int get_target_state_id(fsm_t *fsm)
 }
 
 
-static action_ptr_t get_state_entry_action(fsm_t *fsm, uint8_t *state)
+static fsm_action_ptr_t get_state_entry_action(fsm_t *fsm, uint8_t *state)
 {
     uint8_t action_map = *(state + OFFSET_ACTION_MAP);
 
     if (action_map & ACTION_MASK_ENTRY) {
         printf("----- found entry action\n");
-        return (*fsm->state_actions)[OFFSET_ACTION_ENTRY];
+        return *(fsm->state_actions + OFFSET_ACTION_ENTRY);
     }
     else {
         printf("------- entry action not found\n");
@@ -238,13 +235,13 @@ static action_ptr_t get_state_entry_action(fsm_t *fsm, uint8_t *state)
     }
 }
 
-static action_ptr_t get_state_exit_action(fsm_t *fsm, uint8_t *state)
+static fsm_action_ptr_t get_state_exit_action(fsm_t *fsm, uint8_t *state)
 {
     uint8_t action_map = *(state + OFFSET_ACTION_MAP);
 
     if (action_map & ACTION_MASK_EXIT) {
         printf("----- found exit action\n");
-        return (*fsm->state_actions)[OFFSET_ACTION_EXIT];
+        return *(fsm->state_actions + OFFSET_ACTION_EXIT);
     }
     else {
         printf("------- exit action not found\n");
@@ -252,13 +249,13 @@ static action_ptr_t get_state_exit_action(fsm_t *fsm, uint8_t *state)
     }
 }
 
-static action_ptr_t get_state_tick_action(fsm_t *fsm, uint8_t *state)
+static fsm_action_ptr_t get_state_tick_action(fsm_t *fsm, uint8_t *state)
 {
     uint8_t action_map = *(state + OFFSET_ACTION_MAP);
 
     if (action_map & ACTION_MASK_TICK) {
         printf("----- found tick action\n");
-        return (*fsm->state_actions)[OFFSET_ACTION_TICK];
+        return *(fsm->state_actions + OFFSET_ACTION_TICK);
     }
     else {
         printf("------- tick action not found\n");
@@ -270,7 +267,7 @@ static void
 fsm_try_entry_action(fsm_t *fsm)
 {
     uint8_t *state = fsm->current_state;
-    action_ptr_t action = get_state_entry_action(fsm, state);
+    fsm_action_ptr_t action = get_state_entry_action(fsm, state);
     if (action != NULL) {
         (*action)(fsm->user_data);
     }
@@ -280,7 +277,7 @@ static void
 fsm_try_exit_action(fsm_t *fsm)
 {
     uint8_t *state = fsm->current_state;
-    action_ptr_t action = get_state_exit_action(fsm, state);
+    fsm_action_ptr_t action = get_state_exit_action(fsm, state);
     if (action != NULL) {
         (*action)(fsm->user_data);
     }
@@ -289,7 +286,7 @@ fsm_try_exit_action(fsm_t *fsm)
 static void
 fsm_try_tick_action(fsm_t *fsm)
 {
-    action_ptr_t action = get_state_tick_action(fsm, fsm->current_state);
+    fsm_action_ptr_t action = get_state_tick_action(fsm, fsm->current_state);
     if (action != NULL) {
         (*action)(fsm->user_data);
     }
@@ -313,7 +310,7 @@ fsm_try_transition(fsm_t *fsm)
             fsm->current_state_id = new_state_id;
             uint8_t *state = state_descriptor(fsm, new_state_id);
             fsm->current_state = state;
-            fsm->state_actions = (action_ptr_t (*)[]) &((*fsm->action_lut)[*(state + OFFSET_ACTIONS)]);
+            fsm->state_actions = fsm->action_lut + *(state + OFFSET_ACTIONS);
             fsm_try_entry_action(fsm);
         }
     }
@@ -372,7 +369,7 @@ void fsm_send_event(fsm_t *fsm, int event_id)
 
 #ifdef DENSE
 fsm_t*
-fsm_new(uint8_t (*transition_lut)[], void (*(*action_lut)[])(void*),
+fsm_new(uint8_t *transition_lut, void (**action_lut)(void*),
          int start_state_id, void *user_data)
 {
     assert (transition_lut != NULL);
@@ -393,8 +390,7 @@ fsm_new(uint8_t (*transition_lut)[], void (*(*action_lut)[])(void*),
     fsm->pending_event_id = 0;
     fsm->user_data = user_data;
 
-    fsm->state_actions = (action_ptr_t (*)[])
-                        &((*action_lut)[*(fsm->current_state + OFFSET_ACTIONS)]);
+    fsm->state_actions = action_lut + *(fsm->current_state + OFFSET_ACTIONS);
     LOG(LOG_INFO, "Created state machine #%u", new_fsm_idx);
 
     return fsm;
