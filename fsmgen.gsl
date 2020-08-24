@@ -34,8 +34,8 @@ fsm_t* fsm_$(abbr)_new(void *user_data);
 
 /* Transitions
  * -------------------------------------------------------------------------- */
-static fsm_state_t
-$(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
+static struct fsm_state
+$(abbr)_tx_lut [$(ABBR)_NUMOF_STATES] = {
 .for states
 .    for state
     [$(ABBR)_STATE_$(NAME)] = {
@@ -58,7 +58,7 @@ $(abbr)_tx_table [$(ABBR)_NUMOF_STATES] = {
 fsm_t* fsm_$(abbr)_new(void *user_data)
 {
 .   first_state_id = "$(abbr)_state_$(fsm.first_state)"
-    return fsm_new($(abbr)_tx_table, &$(abbr)_tx_table[$(FIRST_STATE_ID)], user_data);
+    return fsm_new($(abbr)_tx_lut, &$(abbr)_tx_lut[$(FIRST_STATE_ID)], user_data);
 }
 
 .close

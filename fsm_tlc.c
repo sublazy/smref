@@ -6,7 +6,7 @@
 /* Transitions
  * -------------------------------------------------------------------------- */
 static struct fsm_state
-tlc_tx_table [TLC_NUMOF_STATES] = {
+tlc_tx_lut [TLC_NUMOF_STATES] = {
     [TLC_STATE_OFF] = {
         .id = TLC_STATE_OFF,
         .transitions = {
@@ -52,6 +52,6 @@ tlc_tx_table [TLC_NUMOF_STATES] = {
  * -------------------------------------------------------------------------- */
 fsm_t* fsm_tlc_new(void *user_data)
 {
-    return fsm_new(tlc_tx_table, &tlc_tx_table[TLC_STATE_OFF], user_data);
+    return fsm_new(tlc_tx_lut, &tlc_tx_lut[TLC_STATE_OFF], user_data);
 }
 
